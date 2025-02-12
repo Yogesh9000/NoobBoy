@@ -1,5 +1,5 @@
-#include "bus.hpp"
 #include "common.hpp"
+#include "simple_bus.hpp"
 #include "decoder.hpp"
 #include "executor.hpp"
 #include <cstdint>
@@ -63,9 +63,9 @@ namespace
     std::ifstream file{ "data/" EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                    \
     ASSERT_TRUE(file.is_open());                                                                              \
     json tests = json::parse(file);                                                                           \
-    Bus bus{};                                                                                                \
-    Executor<CpuState, Bus> executor;                                                                         \
-    Decoder<CpuState, Bus, Executor> decoder;                                                                 \
+    SimpleBus bus{};                                                                                                \
+    Executor executor;                                                                         \
+    Decoder decoder;                                                                 \
     for (const auto &test : tests)                                                                            \
     {                                                                                                         \
       auto initialState = CreateInitialStateFromJson(test);                                                   \
