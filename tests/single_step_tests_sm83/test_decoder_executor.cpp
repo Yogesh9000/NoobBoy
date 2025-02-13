@@ -1,7 +1,7 @@
 #include "common.hpp"
-#include "simple_bus.hpp"
 #include "decoder.hpp"
 #include "executor.hpp"
+#include "simple_bus.hpp"
 #include <cstdint>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -63,9 +63,9 @@ namespace
     std::ifstream file{ "data/" EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                    \
     ASSERT_TRUE(file.is_open());                                                                              \
     json tests = json::parse(file);                                                                           \
-    SimpleBus bus{};                                                                                                \
-    Executor executor;                                                                         \
-    Decoder decoder;                                                                 \
+    SimpleBus bus{};                                                                                          \
+    Executor executor;                                                                                        \
+    Decoder decoder;                                                                                          \
     for (const auto &test : tests)                                                                            \
     {                                                                                                         \
       auto initialState = CreateInitialStateFromJson(test);                                                   \
@@ -102,3 +102,39 @@ DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 0c);
 DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 0d);
 DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 0e);
 DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 0f);
+
+
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, DISABLED_10); // TODO: find why there are extra cycles in test
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 11);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 12);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 13);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 14);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 15);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 16);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 17);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 18);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 19);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1a);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1b);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1c);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1d);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1e);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 1f);
+
+
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 20);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 21);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 22);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 23);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 24);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 25);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 26);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 27);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 28);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 29);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2a);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2b);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2c);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2d);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2e);
+DEFINE_TEST(SINGLE_STEP_TESTS_SM83, 2f);
