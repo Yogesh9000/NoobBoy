@@ -1149,3 +1149,237 @@ template<> void Executor::Execute<0x7F>(CpuState &state, Bus &bus)
 {
   state.t_cycles += 4;
 }
+
+// ADD A, B
+template<> void Executor::Execute<0x80>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.BC.high);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.BC.high & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, C
+template<> void Executor::Execute<0x81>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.BC.low);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.BC.low & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, D
+template<> void Executor::Execute<0x82>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.DE.high);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.DE.high & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, E
+template<> void Executor::Execute<0x83>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.DE.low);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.DE.low & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, H
+template<> void Executor::Execute<0x84>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.HL.high);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.HL.high & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, L
+template<> void Executor::Execute<0x85>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.HL.low);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.HL.low & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADD A, (HL)
+template<> void Executor::Execute<0x86>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.HL.reg);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(u8);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (u8 & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// ADD A, A
+template<> void Executor::Execute<0x87>(CpuState &state, Bus &bus)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.AF.high);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.AF.high & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, B
+template<> void Executor::Execute<0x88>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.BC.high) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.BC.high & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, C
+template<> void Executor::Execute<0x89>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.BC.low) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.BC.low & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, D
+template<> void Executor::Execute<0x8A>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.DE.high) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.DE.high & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, E
+template<> void Executor::Execute<0x8B>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.DE.low) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.DE.low & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, H
+template<> void Executor::Execute<0x8C>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.HL.high) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.HL.high & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, L
+template<> void Executor::Execute<0x8D>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.HL.low) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.HL.low & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+// ADC A, (HL)
+template<> void Executor::Execute<0x8E>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint8_t u8 = bus.Read(state.HL.reg);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(u8) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (u8 & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// ADC A, A
+template<> void Executor::Execute<0x8F>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(state.AF.high) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (state.AF.high & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
