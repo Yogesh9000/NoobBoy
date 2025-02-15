@@ -57,9 +57,9 @@ template<> void Executor::Execute<0x04>(CpuState &state, Bus &bus)
 {
     uint16_t res = state.BC.high + 1;
 
-    SetH(state, (res & (1U << 4U)) != (state.BC.high & (1U << 4U)));
-    SetN(state, false);
     SetZ(state, (res & 0xFFU) == 0);
+    SetN(state, false);
+    SetH(state, (res & (1U << 4U)) != (state.BC.high & (1U << 4U)));
 
     state.BC.high = (res & 0xFFU);
     state.t_cycles += 4;
@@ -537,5 +537,175 @@ template <> void Executor::Execute<0x2F>(CpuState &state, Bus &bus)
   SetH(state, true);
 
   state.AF.high = ~state.AF.high;
+  state.t_cycles += 4;
+}
+
+// JR NC, i8
+template <> void Executor::Execute<0x30>(CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  if ((state.AF.low & (1U << 4U)) == 0)
+  {
+    state.PC.reg = state.PC.reg + i8;
+    state.t_cycles += 12;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// LD SP, u16
+template <> void Executor::Execute<0x31>(CpuState &state, Bus &bus)
+{
+  auto lsb = bus.Read(state.PC.reg++);
+  auto msb = bus.Read(state.PC.reg++);
+  state.SP.reg = ToU16(msb, lsb);
+  state.t_cycles += 12;
+}
+
+// LD (HL+), A
+template <> void Executor::Execute<0x32>(CpuState &state, Bus &bus)
+{
+  bus.Write(state.HL.reg, state.AF.high);
+  state.HL.reg = state.HL.reg - 1;
+  state.t_cycles += 8;
+}
+
+// INC SP
+template<> void Executor::Execute<0x33>(CpuState &state, Bus &bus)
+{
+    ++state.SP.reg;
+    state.t_cycles += 8;
+}
+
+// INC (HL)
+template<> void Executor::Execute<0x34>(CpuState &state, Bus &bus)
+{
+  uint8_t data = bus.Read(state.HL.reg);
+  uint16_t res = data + 1;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((data & 0x0FU) + 1U) > 0x0F);
+
+  bus.Write(state.HL.reg, (res & 0xFFU));
+  state.t_cycles += 12;
+}
+
+// DEC (HL)
+template<> void Executor::Execute<0x35>(CpuState &state, Bus &bus)
+{
+  uint8_t data = bus.Read(state.HL.reg);
+  uint16_t res = data - 1;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, true);
+  SetH(state, ((data & 0x0FU) - 1U) > 0x0F);
+
+  bus.Write(state.HL.reg, (res & 0xFFU));
+  state.t_cycles += 12;
+}
+
+// LD (HL), u8
+template<> void Executor::Execute<0x36>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  bus.Write(state.HL.reg, u8);
+  state.t_cycles += 12;
+}
+
+// SCF
+template <> void Executor::Execute<0x37>(CpuState &state, Bus &bus)
+{
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, true);
+  state.t_cycles += 4;
+}
+
+// JR C, i8
+template <> void Executor::Execute<0x38>(CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  if ((state.AF.low & (1U << 4U)) != 0)
+  {
+    state.PC.reg = state.PC.reg + i8;
+    state.t_cycles += 12;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// ADD HL, SP
+template <> void Executor::Execute<0x39>(CpuState &state, Bus &bus)
+{
+  uint32_t res = static_cast<uint32_t>(state.HL.reg) + static_cast<uint32_t>(state.SP.reg);
+
+  SetN(state, false);
+  SetH(state, ((state.HL.reg & 0xFFFU) + (state.SP.reg & 0xFFFU)) > 0xFFFU);
+  SetCY(state, res >= 0xFFFFU);
+
+  state.HL.reg = res & 0xFFFFU;
+  state.t_cycles += 8;
+}
+
+// LD A, (HL-)
+template <> void Executor::Execute<0x3A>(CpuState &state, Bus &bus)
+{
+  state.AF.high = bus.Read(state.HL.reg);
+  state.HL.reg = state.HL.reg - 1;
+  state.t_cycles += 8;
+}
+
+// DEC SP
+template <> void Executor::Execute<0x3B>(CpuState &state, Bus &bus)
+{
+  state.SP.reg = state.SP.reg - 1;
+  state.t_cycles += 8;
+}
+
+// INC A
+template<> void Executor::Execute<0x3C>(CpuState &state, Bus &bus)
+{
+    uint16_t res = state.AF.high + 1;
+
+    SetZ(state, (res & 0xFFU) == 0);
+    SetN(state, false);
+    SetH(state, ((state.AF.high & 0x0FU) + 1) > 0x0FU);
+
+    state.AF.high = (res & 0xFFU);
+    state.t_cycles += 4;
+}
+
+// DEC A
+template<> void Executor::Execute<0x3D>(CpuState &state, Bus &bus)
+{
+    uint8_t res = state.AF.high - 1;
+
+    SetZ(state, res == 0);
+    SetN(state, true);
+    SetH(state, ((state.AF.high & 0xFU) - 1) > 0xFU);
+
+    state.AF.high = res;
+    state.t_cycles += 4;
+}
+
+// LD A, u8
+template<> void Executor::Execute<0x3E>(CpuState &state, Bus &bus)
+{
+    state.AF.high = bus.Read(state.PC.reg++);
+    state.t_cycles += 8;
+}
+
+// CCF
+template <> void Executor::Execute<0x3F>(CpuState &state, Bus &bus)
+{
+  SetN(state, false);
+  SetH(state, false);
+
+  state.AF.low = state.AF.low ^ (1U << 4U);
   state.t_cycles += 4;
 }
