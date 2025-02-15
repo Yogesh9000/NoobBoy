@@ -819,3 +819,113 @@ template <> void Executor::Execute<0x4F>(CpuState &state, Bus &bus)
   state.BC.low = state.AF.high;
   state.t_cycles += 4;
 }
+
+// LD D, B
+template <> void Executor::Execute<0x50>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.BC.high;
+  state.t_cycles += 4;
+}
+
+// LD D, C
+template <> void Executor::Execute<0x51>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.BC.low;
+  state.t_cycles += 4;
+}
+
+// LD D, D
+template <> void Executor::Execute<0x52>(CpuState &state, Bus &bus)
+{
+  state.t_cycles += 4;
+}
+
+// LD D, E
+template <> void Executor::Execute<0x53>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.DE.low;
+  state.t_cycles += 4;
+}
+
+// LD D, H
+template <> void Executor::Execute<0x54>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.HL.high;
+  state.t_cycles += 4;
+}
+
+// LD D, L
+template <> void Executor::Execute<0x55>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.HL.low;
+  state.t_cycles += 4;
+}
+
+// LD D, (HL)
+template <> void Executor::Execute<0x56>(CpuState &state, Bus &bus)
+{
+  state.DE.high = bus.Read(state.HL.reg);
+  state.t_cycles += 8;
+}
+
+// LD D, A
+template <> void Executor::Execute<0x57>(CpuState &state, Bus &bus)
+{
+  state.DE.high = state.AF.high;
+  state.t_cycles += 4;
+}
+
+// LD E, B
+template <> void Executor::Execute<0x58>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.BC.high;
+  state.t_cycles += 4;
+}
+
+// LD E, C
+template <> void Executor::Execute<0x59>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.BC.low;
+  state.t_cycles += 4;
+}
+
+// LD E, D
+template <> void Executor::Execute<0x5A>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.DE.high;
+  state.t_cycles += 4;
+}
+
+// LD E, E
+template <> void Executor::Execute<0x5B>(CpuState &state, Bus &bus)
+{
+  state.t_cycles += 4;
+}
+
+// LD E, H
+template <> void Executor::Execute<0x5C>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.HL.high;
+  state.t_cycles += 4;
+}
+
+// LD E, L
+template <> void Executor::Execute<0x5D>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.HL.low;
+  state.t_cycles += 4;
+}
+
+// LD E, (HL)
+template <> void Executor::Execute<0x5E>(CpuState &state, Bus &bus)
+{
+  state.DE.low = bus.Read(state.HL.reg);
+  state.t_cycles += 8;
+}
+
+// LD E, A
+template <> void Executor::Execute<0x5F>(CpuState &state, Bus &bus)
+{
+  state.DE.low = state.AF.high;
+  state.t_cycles += 4;
+}
