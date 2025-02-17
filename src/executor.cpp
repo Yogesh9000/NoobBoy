@@ -1619,7 +1619,7 @@ template<> void Executor::Execute<0x9F>(CpuState &state, Bus &bus)
 }
 
 // AND A, B
-template <> void Executor::Execute<0xA0>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA0>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.BC.high);
 
@@ -1633,7 +1633,7 @@ template <> void Executor::Execute<0xA0>(CpuState &state, Bus &bus)
 }
 
 // AND A, C
-template <> void Executor::Execute<0xA1>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA1>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.BC.low);
 
@@ -1647,7 +1647,7 @@ template <> void Executor::Execute<0xA1>(CpuState &state, Bus &bus)
 }
 
 // AND A, D
-template <> void Executor::Execute<0xA2>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA2>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.DE.high);
 
@@ -1661,7 +1661,7 @@ template <> void Executor::Execute<0xA2>(CpuState &state, Bus &bus)
 }
 
 // AND A, E
-template <> void Executor::Execute<0xA3>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA3>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.DE.low);
 
@@ -1675,7 +1675,7 @@ template <> void Executor::Execute<0xA3>(CpuState &state, Bus &bus)
 }
 
 // AND A, H
-template <> void Executor::Execute<0xA4>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA4>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.HL.high);
 
@@ -1689,7 +1689,7 @@ template <> void Executor::Execute<0xA4>(CpuState &state, Bus &bus)
 }
 
 // AND A, L
-template <> void Executor::Execute<0xA5>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA5>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.HL.low);
 
@@ -1703,7 +1703,7 @@ template <> void Executor::Execute<0xA5>(CpuState &state, Bus &bus)
 }
 
 // AND A, (HL)
-template <> void Executor::Execute<0xA6>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA6>(CpuState &state, Bus &bus)
 {
   uint8_t u8 = bus.Read(state.HL.reg);
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(u8);
@@ -1718,7 +1718,7 @@ template <> void Executor::Execute<0xA6>(CpuState &state, Bus &bus)
 }
 
 // AND A, A
-template <> void Executor::Execute<0xA7>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA7>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) & static_cast<uint16_t>(state.AF.high);
 
@@ -1732,7 +1732,7 @@ template <> void Executor::Execute<0xA7>(CpuState &state, Bus &bus)
 }
 
 // XOR A, B
-template <> void Executor::Execute<0xA8>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA8>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.BC.high);
 
@@ -1746,7 +1746,7 @@ template <> void Executor::Execute<0xA8>(CpuState &state, Bus &bus)
 }
 
 // XOR A, C
-template <> void Executor::Execute<0xA9>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xA9>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.BC.low);
 
@@ -1760,7 +1760,7 @@ template <> void Executor::Execute<0xA9>(CpuState &state, Bus &bus)
 }
 
 // XOR A, D
-template <> void Executor::Execute<0xAA>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAA>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.DE.high);
 
@@ -1774,7 +1774,7 @@ template <> void Executor::Execute<0xAA>(CpuState &state, Bus &bus)
 }
 
 // XOR A, E
-template <> void Executor::Execute<0xAB>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAB>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.DE.low);
 
@@ -1788,7 +1788,7 @@ template <> void Executor::Execute<0xAB>(CpuState &state, Bus &bus)
 }
 
 // XOR A, H
-template <> void Executor::Execute<0xAC>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAC>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.HL.high);
 
@@ -1802,7 +1802,7 @@ template <> void Executor::Execute<0xAC>(CpuState &state, Bus &bus)
 }
 
 // XOR A, L
-template <> void Executor::Execute<0xAD>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAD>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.HL.low);
 
@@ -1816,7 +1816,7 @@ template <> void Executor::Execute<0xAD>(CpuState &state, Bus &bus)
 }
 
 // XOR A, (HL)
-template <> void Executor::Execute<0xAE>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAE>(CpuState &state, Bus &bus)
 {
   uint8_t u8 = bus.Read(state.HL.reg);
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(u8);
@@ -1831,7 +1831,7 @@ template <> void Executor::Execute<0xAE>(CpuState &state, Bus &bus)
 }
 
 // XOR A, A
-template <> void Executor::Execute<0xAF>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xAF>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) ^ static_cast<uint16_t>(state.AF.high);
 
@@ -1845,7 +1845,7 @@ template <> void Executor::Execute<0xAF>(CpuState &state, Bus &bus)
 }
 
 // OR A, B
-template <> void Executor::Execute<0xB0>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB0>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.BC.high);
 
@@ -1859,7 +1859,7 @@ template <> void Executor::Execute<0xB0>(CpuState &state, Bus &bus)
 }
 
 // OR A, C
-template <> void Executor::Execute<0xB1>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB1>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.BC.low);
 
@@ -1873,7 +1873,7 @@ template <> void Executor::Execute<0xB1>(CpuState &state, Bus &bus)
 }
 
 // OR A, D
-template <> void Executor::Execute<0xB2>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB2>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.DE.high);
 
@@ -1887,7 +1887,7 @@ template <> void Executor::Execute<0xB2>(CpuState &state, Bus &bus)
 }
 
 // OR A, E
-template <> void Executor::Execute<0xB3>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB3>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.DE.low);
 
@@ -1901,7 +1901,7 @@ template <> void Executor::Execute<0xB3>(CpuState &state, Bus &bus)
 }
 
 // OR A, H
-template <> void Executor::Execute<0xB4>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB4>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.HL.high);
 
@@ -1915,7 +1915,7 @@ template <> void Executor::Execute<0xB4>(CpuState &state, Bus &bus)
 }
 
 // OR A, L
-template <> void Executor::Execute<0xB5>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB5>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.HL.low);
 
@@ -1929,7 +1929,7 @@ template <> void Executor::Execute<0xB5>(CpuState &state, Bus &bus)
 }
 
 // OR A, (HL)
-template <> void Executor::Execute<0xB6>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB6>(CpuState &state, Bus &bus)
 {
   uint8_t u8 = bus.Read(state.HL.reg);
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(u8);
@@ -1944,7 +1944,7 @@ template <> void Executor::Execute<0xB6>(CpuState &state, Bus &bus)
 }
 
 // OR A, A
-template <> void Executor::Execute<0xB7>(CpuState &state, Bus &bus)
+template<> void Executor::Execute<0xB7>(CpuState &state, Bus &bus)
 {
   uint16_t res = static_cast<uint16_t>(state.AF.high) | static_cast<uint16_t>(state.AF.high);
 
@@ -2060,4 +2060,198 @@ template<> void Executor::Execute<0xBF>(CpuState &state, Bus &bus)
   SetCY(state, res > 0xFFU);
 
   state.t_cycles += 4;
+}
+
+// RET NZ
+template<> void Executor::Execute<0xC0>(CpuState &state, Bus &bus)
+{
+  if ((state.AF.low & (1U << 7U)) == 0)
+  {
+    uint8_t lsb = bus.Read(state.SP.reg++);
+    uint8_t msb = bus.Read(state.SP.reg++);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 20;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// POP BC
+template<> void Executor::Execute<0xC1>(CpuState &state, Bus &bus)
+{
+  state.BC.low = bus.Read(state.SP.reg++);
+  state.BC.high = bus.Read(state.SP.reg++);
+  state.t_cycles += 12;
+}
+
+// JP NZ, u16
+template<> void Executor::Execute<0xC2>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 7U)) == 0)
+  {
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 16;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// JP u16
+template<> void Executor::Execute<0xC3>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 16;
+}
+
+// CALL NZ, u16
+template<> void Executor::Execute<0xC4>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 7U)) == 0)
+  {
+    bus.Write(--state.SP.reg, state.PC.high);
+    bus.Write(--state.SP.reg, state.PC.low);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 24;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// PUSH BC
+template<> void Executor::Execute<0xC5>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.BC.high);
+  bus.Write(--state.SP.reg, state.BC.low);
+  state.t_cycles += 16;
+}
+
+// ADD A, u8
+template<> void Executor::Execute<0xC6>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(u8);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (u8 & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// RST 00h
+template<> void Executor::Execute<0xC7>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x00;
+  state.t_cycles += 16;
+}
+
+// RET Z
+template<> void Executor::Execute<0xC8>(CpuState &state, Bus &bus)
+{
+  if ((state.AF.low & (1U << 7U)) != 0)
+  {
+    uint8_t lsb = bus.Read(state.SP.reg++);
+    uint8_t msb = bus.Read(state.SP.reg++);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 20;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// RET
+template<> void Executor::Execute<0xC9>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.SP.reg++);
+  uint8_t msb = bus.Read(state.SP.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 16;
+}
+
+// JP Z, u16
+template<> void Executor::Execute<0xCA>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 7U)) != 0)
+  {
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 16;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// CALL Z, u16
+template<> void Executor::Execute<0xCC>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 7U)) != 0)
+  {
+    bus.Write(--state.SP.reg, state.PC.high);
+    bus.Write(--state.SP.reg, state.PC.low);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 24;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// CALL u16
+template<> void Executor::Execute<0xCD>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 24;
+}
+
+// ADC A, u8
+template<> void Executor::Execute<0xCE>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(u8) + c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high & 0xFU) + (u8 & 0xFU) + c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// RST 08h
+template<> void Executor::Execute<0xCF>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x08;
+  state.t_cycles += 16;
 }
