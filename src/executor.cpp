@@ -2255,3 +2255,185 @@ template<> void Executor::Execute<0xCF>(CpuState &state, Bus &bus)
   state.PC.reg = 0x08;
   state.t_cycles += 16;
 }
+
+// RET NC
+template<> void Executor::Execute<0xD0>(CpuState &state, Bus &bus)
+{
+  if ((state.AF.low & (1U << 4U)) == 0)
+  {
+    uint8_t lsb = bus.Read(state.SP.reg++);
+    uint8_t msb = bus.Read(state.SP.reg++);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 20;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// POP DE
+template<> void Executor::Execute<0xD1>(CpuState &state, Bus &bus)
+{
+  state.DE.low = bus.Read(state.SP.reg++);
+  state.DE.high = bus.Read(state.SP.reg++);
+  state.t_cycles += 12;
+}
+
+// JP NC, u16
+template<> void Executor::Execute<0xD2>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 4U)) == 0)
+  {
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 16;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// NOTE: opcode 0xD3 is unused
+
+// CALL NC, u16
+template<> void Executor::Execute<0xD4>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 4U)) == 0)
+  {
+    bus.Write(--state.SP.reg, state.PC.high);
+    bus.Write(--state.SP.reg, state.PC.low);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 24;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// PUSH DE
+template<> void Executor::Execute<0xD5>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.DE.high);
+  bus.Write(--state.SP.reg, state.DE.low);
+  state.t_cycles += 16;
+}
+
+// SUB A, u8
+template<> void Executor::Execute<0xD6>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) - static_cast<uint16_t>(u8);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, true);
+  SetH(state, ((state.AF.high & 0xFU) - (u8 & 0xFU)) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// RST 10h
+template<> void Executor::Execute<0xD7>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x10;
+  state.t_cycles += 16;
+}
+
+// RET C
+template<> void Executor::Execute<0xD8>(CpuState &state, Bus &bus)
+{
+  if ((state.AF.low & (1U << 4U)) != 0)
+  {
+    uint8_t lsb = bus.Read(state.SP.reg++);
+    uint8_t msb = bus.Read(state.SP.reg++);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 20;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+// RETI
+template<> void Executor::Execute<0xD9>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.SP.reg++);
+  uint8_t msb = bus.Read(state.SP.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.ime = 1;
+  state.t_cycles += 16;
+}
+
+// JP C, u16
+template<> void Executor::Execute<0xDA>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 4U)) != 0)
+  {
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 16;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// NOTE: opcode 0xDB is unused
+
+// CALL C, u16
+template<> void Executor::Execute<0xDC>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if ((state.AF.low & (1U << 4U)) != 0)
+  {
+    bus.Write(--state.SP.reg, state.PC.high);
+    bus.Write(--state.SP.reg, state.PC.low);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 24;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+// NOTE: opcode 0xDD is unused
+
+// 
+// SBC A, u8
+template<> void Executor::Execute<0xDE>(CpuState &state, Bus &bus)
+{
+  auto c = static_cast<uint16_t>((state.AF.low & (1U << 4U)) >> 4U);
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint16_t res = static_cast<uint16_t>(state.AF.high) - static_cast<uint16_t>(u8) - c;
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, true);
+  SetH(state, ((state.AF.high & 0xFU) - (u8 & 0xFU) - c) > 0xFU);
+  SetCY(state, res > 0xFFU);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 8;
+}
+
+// RST 18h
+template<> void Executor::Execute<0xDF>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x18;
+  state.t_cycles += 16;
+}
