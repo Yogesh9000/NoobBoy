@@ -2437,3 +2437,119 @@ template<> void Executor::Execute<0xDF>(CpuState &state, Bus &bus)
   state.PC.reg = 0x18;
   state.t_cycles += 16;
 }
+
+// LD (FF00 + u8), A
+template <> void Executor::Execute<0xE0>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  bus.Write(0xFF00 + u8, state.AF.high);
+  state.t_cycles += 12;
+}
+
+// POP HL
+template<> void Executor::Execute<0xE1>(CpuState &state, Bus &bus)
+{
+  state.HL.low = bus.Read(state.SP.reg++);
+  state.HL.high = bus.Read(state.SP.reg++);
+  state.t_cycles += 12;
+}
+
+// LD (FF00 + C), A
+template <> void Executor::Execute<0xE2>(CpuState &state, Bus &bus)
+{
+  bus.Write(0xFF00 + state.BC.low, state.AF.high);
+  state.t_cycles += 8;
+}
+
+// NOTE: opcode 0xE3 is unused
+
+// NOTE: opcode 0xE4 is unused
+
+// PUSH HL
+template<> void Executor::Execute<0xE5>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.HL.high);
+  bus.Write(--state.SP.reg, state.HL.low);
+  state.t_cycles += 16;
+}
+
+// AND A, u8
+template<> void Executor::Execute<0xE6>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint8_t res = state.AF.high & u8;
+  SetZ(state, res == 0);
+  SetN(state, false);
+  SetH(state, true);
+  SetCY(state, false);
+
+  state.AF.high = res;
+  state.t_cycles += 8;
+}
+
+// RST 20h
+template<> void Executor::Execute<0xE7>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x20;
+  state.t_cycles += 16;
+}
+
+// ADD SP, i8
+template<> void Executor::Execute<0xE8>(CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  uint16_t res = state.SP.reg + i8;
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, ((state.SP.reg ^ i8 ^ res) & 0x10) != 0); // Half-carry detection
+  SetCY(state, ((state.SP.reg ^ i8 ^ res) & 0x100) != 0);
+  state.SP.reg = res;
+  state.t_cycles += 16;
+}
+
+// JP HL
+template <> void Executor::Execute<0xE9>(CpuState &state, Bus &bus)
+{
+  state.PC.reg = state.HL.reg;
+  state.t_cycles += 4;
+}
+
+// LD u16, A
+template <> void Executor::Execute<0xEA>(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  bus.Write(ToU16(msb, lsb), state.AF.high);
+  state.t_cycles += 16;
+}
+
+// NOTE: opcode 0xEB is unused
+
+// NOTE: opcode 0xEC is unused
+
+// NOTE: opcode 0xED is unused
+
+// XOR A, u8
+template <> void Executor::Execute<0xEE>(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  uint8_t res = state.AF.high ^ u8;
+  SetZ(state, res == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, false);
+
+  state.AF.high = res;
+  state.t_cycles += 8;
+}
+
+// RST 28h
+template<> void Executor::Execute<0xEF>(CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = 0x28;
+  state.t_cycles += 16;
+}
