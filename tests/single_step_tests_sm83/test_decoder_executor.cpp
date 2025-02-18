@@ -24,6 +24,7 @@ namespace
     state.HL.high = cpuState["h"];
     state.SP.reg = cpuState["sp"];
     state.PC.reg = cpuState["pc"];
+    state.ime = static_cast<uint8_t>(cpuState["ime"]);
     state.t_cycles = 0;
     return state;
   }
@@ -40,8 +41,9 @@ namespace
     return state;
   }
 
-  void InitializeBusFromJson(auto &bus, const auto &cpuState)
+  void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
   {
+    bus.Write(0xFFFFU, ie);
     for (const auto &memState : cpuState["ram"])
     {
       uint16_t loc = memState[0];
@@ -71,7 +73,7 @@ namespace
       auto initialState = CreateInitialStateFromJson(test);                                                   \
       auto finalState = CreateFinalStateFromJson(test);                                                       \
       bus.Reset();                                                                                            \
-      InitializeBusFromJson(bus, test["initial"]);                                                            \
+      InitializeBusFromJson(bus, test["initial"], test["initial"]["ie"]);                                     \
       auto opcode = bus.Read(initialState.PC.reg++);                                                          \
       decoder.DecodeAndExecute(opcode, initialState, bus, executor);                                          \
       ASSERT_EQ(initialState, finalState)                                                                     \

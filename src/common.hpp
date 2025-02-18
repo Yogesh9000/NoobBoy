@@ -51,13 +51,14 @@ struct CpuState
   Register HL;
   Register SP;
   Register PC;
+  bool ime;
 
   uint64_t t_cycles;
 
   bool operator==(const CpuState &state) const
   {
     return (AF.reg == state.AF.reg) && (BC.reg == state.BC.reg) && (DE.reg == state.DE.reg) && (HL.reg == state.HL.reg)
-           && (SP.reg == state.SP.reg) && (PC.reg == state.PC.reg) && (t_cycles == state.t_cycles);
+           && (SP.reg == state.SP.reg) && (PC.reg == state.PC.reg) && (ime == state.ime) && (t_cycles == state.t_cycles);
   }
 
   friend std::ostream &operator<<(std::ostream &os, const CpuState &state);
@@ -65,8 +66,8 @@ struct CpuState
 
 inline std::ostream &operator<<(std::ostream &os, const CpuState &state)
 {
-  os << std::format("{{A={}, B={}, C={}, D={}, E={}, H={}, L={}, F={}, SP={}, PC={}, TCyles={}",
+  os << std::format("{{A={}, B={}, C={}, D={}, E={}, H={}, L={}, F={}, SP={}, PC={}, ime={}, TCyles={}",
     state.AF.high, state.BC.high, state.BC.low, state.DE.high, state.DE.low, state.HL.high,
-    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.t_cycles);
+    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.ime, state.t_cycles);
   return os;
 }
