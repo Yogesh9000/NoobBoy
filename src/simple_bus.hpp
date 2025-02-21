@@ -16,6 +16,8 @@ public:
   // write 1 byte of data at given location
   void Write(uint16_t addr, uint8_t data) override;
 
+  uint8_t& Address(uint16_t addr) override;
+
   // reset all memory location to zero
   void Reset() override;
 
