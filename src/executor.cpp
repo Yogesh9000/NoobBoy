@@ -8,26 +8,31 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
 {
   switch (opcode)
   {
+    case 0x00: Nop(state); break;
     case 0x01: Load_RR_NN(state.BC.reg, state, bus); break;
     case 0x02: Load_BC_A(state, bus); break;
     case 0x06: Load_R_N(state.BC.high, state, bus); break;
     case 0x0E: Load_R_N(state.BC.low, state, bus); break;
     case 0x08: Load_NN_SP(state, bus); break;
+    case 0x09: Add_HL_RR(state.BC.reg, state); break;
     case 0x0A: Load_A_BC(state, bus); break;
     case 0x11: Load_RR_NN(state.DE.reg, state, bus); break;
     case 0x12: Load_DE_A(state, bus); break;
     case 0x16: Load_R_N(state.DE.high, state, bus); break;
+    case 0x19: Add_HL_RR(state.DE.reg, state); break;
     case 0x1E: Load_R_N(state.DE.low, state, bus); break;
     case 0x1A: Load_A_DE(state, bus); break;
     case 0x21: Load_RR_NN(state.HL.reg, state, bus); break;
     case 0x22: Load_HL_A_Pos(state, bus); break;
     case 0x26: Load_R_N(state.HL.high, state, bus); break;
+    case 0x29: Add_HL_RR(state.HL.reg, state); break;
     case 0x2E: Load_R_N(state.HL.low, state, bus); break;
     case 0x2A: Load_A_HL_Pos(state, bus); break;
     case 0x31: Load_RR_NN(state.SP.reg, state, bus); break;
     case 0x32: Load_HL_A_Neg(state, bus); break;
     case 0x36: Load_HL_N(state, bus); break;
     case 0x3E: Load_R_N(state.AF.high, state, bus); break;
+    case 0x39: Add_HL_RR(state.SP.reg, state); break;
     case 0x3A: Load_A_HL_Neg(state, bus); break;
     case 0x40: Load_R_R(state.BC.high, state.BC.high, state); break;
     case 0x41: Load_R_R(state.BC.high, state.BC.low, state); break;
@@ -92,14 +97,24 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x7D: Load_R_R(state.AF.high, state.HL.low, state); break;
     case 0x7E: Load_R_HL(state.AF.high, state, bus); break;
     case 0x7F: Load_R_R(state.AF.high, state.AF.high, state); break;
+    case 0x80: Add_R(state.BC.high, state); break;
+    case 0x81: Add_R(state.BC.low, state); break;
+    case 0x82: Add_R(state.DE.high, state); break;
+    case 0x83: Add_R(state.DE.low, state); break;
+    case 0x84: Add_R(state.HL.high, state); break;
+    case 0x85: Add_R(state.HL.low, state); break;
+    case 0x86: Add_HL(state, bus); break;
+    case 0x87: Add_R(state.AF.high, state); break;
+    case 0xC6: Add_N(state, bus); break;
     case 0xE0: Load_N_A(state, bus); break;
     case 0xE2: Load_C_A(state, bus); break;
+    case 0xE8: Add_SP_E(state, bus); break;
     case 0xEA: Load_NN_A(state, bus); break;
     case 0xF0: Load_A_N(state, bus); break;
     case 0xF2: Load_A_C(state, bus); break;
     case 0xFA: Load_A_NN(state, bus); break;
-    case 0xf8: Load_HL_SP_E(state, bus); break;
-    case 0xf9: Load_SP_HL(state, bus); break;
+    case 0xF8: Load_HL_SP_E(state, bus); break;
+    case 0xF9: Load_SP_HL(state, bus); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}{:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
@@ -131,6 +146,11 @@ void Executor::SetCY(CpuState &state, bool value)
   state.AF.low = (state.AF.low & ~(1U << 4U)) | static_cast<uint8_t>(value << 4U);
 }
 
+// Special
+void Executor::Nop(CpuState &state)
+{
+  state.t_cycles += 4;
+}
 
 // Load
 
@@ -296,4 +316,58 @@ void Executor::Load_HL_SP_E(CpuState &state, Bus &bus)
 
   state.HL.reg = res;
   state.t_cycles += 12;
+}
+
+// Arithmetic
+void Executor::Add_R(uint8_t reg, CpuState &state)
+{
+  uint16_t res = static_cast<uint16_t>(state.AF.high) + static_cast<uint16_t>(reg);
+
+  SetZ(state, (res & 0xFFU) == 0);
+  SetN(state, false);
+  SetH(state, ((state.AF.high ^ reg ^ res) & 0x10) != 0);
+  SetCY(state, ((state.AF.high ^ reg ^ res) & 0x100) != 0);
+
+  state.AF.high = (res & 0xFFU);
+  state.t_cycles += 4;
+}
+
+void Executor::Add_HL(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.HL.reg);
+  Add_R(u8, state);
+  state.t_cycles += 4;
+}
+
+void Executor::Add_N(CpuState &state, Bus &bus)
+{
+  uint8_t u8 = bus.Read(state.PC.reg++);
+  Add_R(u8, state);
+  state.t_cycles += 4;
+}
+
+void Executor::Add_HL_RR(uint16_t src, CpuState &state)
+{
+  uint32_t res = static_cast<uint32_t>(state.HL.reg) + static_cast<uint32_t>(src);
+
+  SetN(state, false);
+  SetH(state, ((state.HL.reg & 0xFFFU) + (src & 0xFFFU)) > 0xFFFU);
+  SetCY(state, res >= 0xFFFFU);
+
+  state.HL.reg = res & 0xFFFFU;
+  state.t_cycles += 8;
+}
+
+void Executor::Add_SP_E(CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  uint16_t res = state.SP.reg + i8;
+
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, ((state.SP.reg ^ i8 ^ res) & 0x10) != 0); // Half-carry detection
+  SetCY(state, ((state.SP.reg ^ i8 ^ res) & 0x100) != 0);
+
+  state.SP.reg = res;
+  state.t_cycles += 16;
 }

@@ -11,6 +11,9 @@ public:
 
 private:
 
+  // Special
+  void Nop(CpuState &state);
+
   // Load
   void Load_R_R(uint8_t &dest, uint8_t src, CpuState &state);
   void Load_R_N(uint8_t &dest, CpuState &state, Bus &bus);
@@ -36,6 +39,12 @@ private:
   void Load_SP_HL(CpuState &state, Bus &bus);
   void Load_HL_SP_E(CpuState &state, Bus &bus);
 
+  // Arithmetic
+  void Add_R(uint8_t reg, CpuState &state);
+  void Add_HL(CpuState &state, Bus &bus);
+  void Add_N(CpuState &state, Bus &bus);
+  void Add_HL_RR(uint16_t src, CpuState &state);
+  void Add_SP_E(CpuState &state, Bus &bus);
 
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
