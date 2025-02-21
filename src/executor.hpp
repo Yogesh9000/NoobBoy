@@ -46,6 +46,34 @@ private:
   void Add_HL_RR(uint16_t src, CpuState &state);
   void Add_SP_E(CpuState &state, Bus &bus);
 
+  void Adc_R(uint8_t reg, CpuState &state);
+  void Adc_HL(CpuState &state, Bus &bus);
+  void Adc_N(CpuState &state, Bus &bus);
+
+  void Sub_R(uint8_t reg, CpuState &state);
+  void Sub_HL(CpuState &state, Bus &bus);
+  void Sub_N(CpuState &state, Bus &bus);
+
+  void Sbc_R(uint8_t reg, CpuState &state);
+  void Sbc_HL(CpuState &state, Bus &bus);
+  void Sbc_N(CpuState &state, Bus &bus);
+
+  void And_R(uint8_t reg, CpuState &state);
+  void And_HL(CpuState &state, Bus &bus);
+  void And_N(CpuState &state, Bus &bus);
+
+  void Xor_R(uint8_t reg, CpuState &state);
+  void Xor_HL(CpuState &state, Bus &bus);
+  void Xor_N(CpuState &state, Bus &bus);
+  
+  void Or_R(uint8_t reg, CpuState &state);
+  void Or_HL(CpuState &state, Bus &bus);
+  void Or_N(CpuState &state, Bus &bus);
+
+  void Cp_R(uint8_t reg, CpuState &state);
+  void Cp_HL(CpuState &state, Bus &bus);
+  void Cp_N(CpuState &state, Bus &bus);
+
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);
