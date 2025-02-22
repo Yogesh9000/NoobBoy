@@ -76,6 +76,19 @@ private:
   void Cp_HL(CpuState &state, Bus &bus);
   void Cp_N(CpuState &state, Bus &bus);
 
+  void Inc_R(uint8_t &src, CpuState &state);
+  void Inc_RR(uint16_t &src, CpuState &state);
+  void Inc_HL(CpuState &state, Bus &bus);
+
+  void Dec_R(uint8_t &src, CpuState &state);
+  void Dec_RR(uint16_t &src, CpuState &state);
+  void Dec_HL(CpuState &state, Bus &bus);
+
+  void Ccf(CpuState &state);
+  void Scf(CpuState &state);
+  void Daa(CpuState &state);
+  void Cpl(CpuState &state);
+
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);
