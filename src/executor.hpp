@@ -89,6 +89,22 @@ private:
   void Daa(CpuState &state);
   void Cpl(CpuState &state);
 
+  // Control Flow
+  void Jp_NN(CpuState &state, Bus &bus);
+  void Jp_HL(CpuState &state);
+  void Jp_CC_NN(bool jmp, CpuState &state, Bus &bus);
+
+  void Jr_E(CpuState &state, Bus &bus);
+  void Jr_CC_E(bool jmp, CpuState &state, Bus &bus);
+
+  void Call_NN(CpuState &state, Bus &bus);
+  void Call_CC_NN(bool call, CpuState &state, Bus &bus);
+
+  void Ret(CpuState &state, Bus &bus);
+  void Ret_CC(bool ret, CpuState &state, Bus &bus);
+  void RetI(CpuState &state, Bus &bus);
+  void Rst(uint8_t addr, CpuState &state, Bus &bus);
+
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);

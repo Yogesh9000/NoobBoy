@@ -18,22 +18,24 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x0E: Load_R_N(state.BC.low, state, bus); break;
     case 0x08: Load_NN_SP(state, bus); break;
     case 0x09: Add_HL_RR(state.BC.reg, state); break;
+    case 0x0A: Load_A_BC(state, bus); break;
     case 0x0B: Dec_RR(state.BC.reg, state); break;
     case 0x0C: Inc_R(state.BC.low, state); break;
     case 0x0D: Dec_R(state.BC.low, state); break;
-    case 0x0A: Load_A_BC(state, bus); break;
     case 0x11: Load_RR_NN(state.DE.reg, state, bus); break;
     case 0x12: Load_DE_A(state, bus); break;
     case 0x13: Inc_RR(state.DE.reg, state); break;
     case 0x14: Inc_R(state.DE.high, state); break;
     case 0x15: Dec_R(state.DE.high, state); break;
     case 0x16: Load_R_N(state.DE.high, state, bus); break;
+    case 0x18: Jr_E(state, bus); break;
     case 0x19: Add_HL_RR(state.DE.reg, state); break;
+    case 0x1A: Load_A_DE(state, bus); break;
     case 0x1B: Dec_RR(state.DE.reg, state); break;
     case 0x1C: Inc_R(state.DE.low, state); break;
     case 0x1D: Dec_R(state.DE.low, state); break;
     case 0x1E: Load_R_N(state.DE.low, state, bus); break;
-    case 0x1A: Load_A_DE(state, bus); break;
+    case 0x20: Jr_CC_E((state.AF.low & (1U << 7U)) == 0, state, bus) ;break;
     case 0x21: Load_RR_NN(state.HL.reg, state, bus); break;
     case 0x22: Load_HL_A_Pos(state, bus); break;
     case 0x23: Inc_RR(state.HL.reg, state); break;
@@ -41,6 +43,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x25: Dec_R(state.HL.high, state); break;
     case 0x26: Load_R_N(state.HL.high, state, bus); break;
     case 0x27: Daa(state); break;
+    case 0x28: Jr_CC_E((state.AF.low & (1U << 7U)) != 0, state, bus) ;break;
     case 0x29: Add_HL_RR(state.HL.reg, state); break;
     case 0x2B: Dec_RR(state.HL.reg, state); break;
     case 0x2C: Inc_R(state.HL.low, state); break;
@@ -48,6 +51,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x2E: Load_R_N(state.HL.low, state, bus); break;
     case 0x2A: Load_A_HL_Pos(state, bus); break;
     case 0x2F: Cpl(state); break;
+    case 0x30: Jr_CC_E((state.AF.low & (1U << 4U)) == 0, state, bus) ;break;
     case 0x31: Load_RR_NN(state.SP.reg, state, bus); break;
     case 0x32: Load_HL_A_Neg(state, bus); break;
     case 0x33: Inc_RR(state.SP.reg, state); break;
@@ -56,6 +60,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x36: Load_HL_N(state, bus); break;
     case 0x37: Scf(state); break;
     case 0x3E: Load_R_N(state.AF.high, state, bus); break;
+    case 0x38: Jr_CC_E((state.AF.low & (1U << 4U)) != 0, state, bus) ;break;
     case 0x39: Add_HL_RR(state.SP.reg, state); break;
     case 0x3B: Dec_RR(state.SP.reg, state); break;
     case 0x3C: Inc_R(state.AF.high, state); break;
@@ -189,22 +194,45 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0xBD: Cp_R(state.HL.low, state); break;
     case 0xBE: Cp_HL(state, bus); break;
     case 0xBF: Cp_R(state.AF.high, state); break;
+    case 0xC0: Ret_CC((state.AF.low & (1U << 7U)) == 0, state, bus); break;
     case 0xC1: Pop(state.BC, state, bus); break;
+    case 0xC2: Jp_CC_NN((state.AF.low & (1U << 7U)) == 0, state, bus); break;
+    case 0xC3: Jp_NN(state, bus); break;
+    case 0xC4: Call_CC_NN((state.AF.low & (1U << 7U)) == 0, state, bus); break;
     case 0xC5: Push(state.BC, state, bus); break;
     case 0xC6: Add_N(state, bus); break;
+    case 0xC7: Rst(0x00, state, bus); break;
+    case 0xC8: Ret_CC((state.AF.low & (1U << 7U)) != 0, state, bus); break;
+    case 0xC9: Ret(state, bus); break;
+    case 0xCC: Call_CC_NN((state.AF.low & (1U << 7U)) != 0, state, bus); break;
+    case 0xCD: Call_NN(state, bus); break;
     case 0xCE: Adc_N(state, bus); break;
+    case 0xCA: Jp_CC_NN((state.AF.low & (1U << 7U)) != 0, state, bus); break;
+    case 0xCF: Rst(0x08, state, bus); break;
+    case 0xD0: Ret_CC((state.AF.low & (1U << 4U)) == 0, state, bus); break;
     case 0xD1: Pop(state.DE, state, bus); break;
+    case 0xD2: Jp_CC_NN((state.AF.low & (1U << 4U)) == 0, state, bus); break;
+    case 0xD4: Call_CC_NN((state.AF.low & (1U << 4U)) == 0, state, bus); break;
     case 0xD5: Push(state.DE, state, bus); break;
     case 0xD6: Sub_N(state, bus); break;
+    case 0xD7: Rst(0x10, state, bus); break;
+    case 0xD8: Ret_CC((state.AF.low & (1U << 4U)) != 0, state, bus); break;
+    case 0xD9: RetI(state, bus); break;
+    case 0xDA: Jp_CC_NN((state.AF.low & (1U << 4U)) != 0, state, bus); break;
+    case 0xDC: Call_CC_NN((state.AF.low & (1U << 4U)) != 0, state, bus); break;
     case 0xDE: Sbc_N(state, bus); break;
+    case 0xDF: Rst(0x18, state, bus); break;
     case 0xE0: Load_N_A(state, bus); break;
     case 0xE1: Pop(state.HL, state, bus); break;
     case 0xE2: Load_C_A(state, bus); break;
     case 0xE5: Push(state.HL, state, bus); break;
     case 0xE6: And_N(state, bus); break;
+    case 0xE7: Rst(0x20, state, bus); break;
     case 0xE8: Add_SP_E(state, bus); break;
-    case 0xEE: Xor_N(state, bus); break;
+    case 0xE9: Jp_HL(state); break;
     case 0xEA: Load_NN_A(state, bus); break;
+    case 0xEE: Xor_N(state, bus); break;
+    case 0xEF: Rst(0x28, state, bus); break;
     case 0xF0: Load_A_N(state, bus); break;
     case 0xF1: {
       Pop(state.AF, state, bus);
@@ -214,9 +242,11 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0xFA: Load_A_NN(state, bus); break;
     case 0xF5: Push(state.AF, state, bus); break;
     case 0xF6: Or_N(state, bus); break;
+    case 0xF7: Rst(0x30, state, bus); break;
     case 0xF8: Load_HL_SP_E(state, bus); break;
     case 0xFE: Cp_N(state, bus); break;
     case 0xF9: Load_SP_HL(state, bus); break;
+    case 0xFF: Rst(0x38, state, bus); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}{:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
@@ -895,4 +925,122 @@ void Executor::Cpl(CpuState &state)
 
   state.AF.high = ~state.AF.high;
   state.t_cycles += 4;
+}
+
+// Control Flow
+void Executor::Jp_NN(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 16;
+}
+
+void Executor::Jp_HL(CpuState &state)
+{
+  state.PC.reg = state.HL.reg;
+  state.t_cycles += 4;
+}
+
+void Executor::Jp_CC_NN(bool jmp, CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if (jmp)
+  {
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 16;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+void Executor::Jr_E(CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  state.PC.reg = state.PC.reg + i8;
+  state.t_cycles += 12;
+}
+
+void Executor::Jr_CC_E(bool jmp, CpuState &state, Bus &bus)
+{
+  auto i8 = static_cast<int8_t>(bus.Read(state.PC.reg++));
+  if (jmp)
+  {
+    state.PC.reg = state.PC.reg + i8;
+    state.t_cycles += 12;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+void Executor::Call_NN(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 24;
+}
+
+void Executor::Call_CC_NN(bool call, CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.PC.reg++);
+  uint8_t msb = bus.Read(state.PC.reg++);
+  if (call)
+  {
+    bus.Write(--state.SP.reg, state.PC.high);
+    bus.Write(--state.SP.reg, state.PC.low);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 24;
+  }
+  else
+  {
+    state.t_cycles += 12;
+  }
+}
+
+void Executor::Ret(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.SP.reg++);
+  uint8_t msb = bus.Read(state.SP.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.t_cycles += 16;
+}
+
+void Executor::Ret_CC(bool ret, CpuState &state, Bus &bus)
+{
+  if (ret)
+  {
+    uint8_t lsb = bus.Read(state.SP.reg++);
+    uint8_t msb = bus.Read(state.SP.reg++);
+    state.PC.reg = ToU16(msb, lsb);
+    state.t_cycles += 20;
+  }
+  else
+  {
+    state.t_cycles += 8;
+  }
+}
+
+void Executor::RetI(CpuState &state, Bus &bus)
+{
+  uint8_t lsb = bus.Read(state.SP.reg++);
+  uint8_t msb = bus.Read(state.SP.reg++);
+  state.PC.reg = ToU16(msb, lsb);
+  state.ime = 1;
+  state.t_cycles += 16;
+}
+
+void Executor::Rst(uint8_t addr, CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, state.PC.high);
+  bus.Write(--state.SP.reg, state.PC.low);
+  state.PC.reg = addr;
+  state.t_cycles += 16;
 }
