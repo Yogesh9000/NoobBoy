@@ -105,6 +105,12 @@ private:
   void RetI(CpuState &state, Bus &bus);
   void Rst(uint8_t addr, CpuState &state, Bus &bus);
 
+  // Rotate-Shift
+  void Rlca(CpuState &state);
+  void Rla(CpuState &state);
+  void Rrca(CpuState &state);
+  void Rra(CpuState &state);
+
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);

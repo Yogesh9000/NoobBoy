@@ -15,6 +15,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x04: Inc_R(state.BC.high, state); break;
     case 0x05: Dec_R(state.BC.high, state); break;
     case 0x06: Load_R_N(state.BC.high, state, bus); break;
+    case 0x07: Rlca(state); break;
     case 0x0E: Load_R_N(state.BC.low, state, bus); break;
     case 0x08: Load_NN_SP(state, bus); break;
     case 0x09: Add_HL_RR(state.BC.reg, state); break;
@@ -22,12 +23,14 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x0B: Dec_RR(state.BC.reg, state); break;
     case 0x0C: Inc_R(state.BC.low, state); break;
     case 0x0D: Dec_R(state.BC.low, state); break;
+    case 0x0F: Rrca(state); break;
     case 0x11: Load_RR_NN(state.DE.reg, state, bus); break;
     case 0x12: Load_DE_A(state, bus); break;
     case 0x13: Inc_RR(state.DE.reg, state); break;
     case 0x14: Inc_R(state.DE.high, state); break;
     case 0x15: Dec_R(state.DE.high, state); break;
     case 0x16: Load_R_N(state.DE.high, state, bus); break;
+    case 0x17: Rla(state); break;
     case 0x18: Jr_E(state, bus); break;
     case 0x19: Add_HL_RR(state.DE.reg, state); break;
     case 0x1A: Load_A_DE(state, bus); break;
@@ -35,6 +38,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x1C: Inc_R(state.DE.low, state); break;
     case 0x1D: Dec_R(state.DE.low, state); break;
     case 0x1E: Load_R_N(state.DE.low, state, bus); break;
+    case 0x1F: Rra(state); break;
     case 0x20: Jr_CC_E((state.AF.low & (1U << 7U)) == 0, state, bus) ;break;
     case 0x21: Load_RR_NN(state.HL.reg, state, bus); break;
     case 0x22: Load_HL_A_Pos(state, bus); break;
@@ -1043,4 +1047,63 @@ void Executor::Rst(uint8_t addr, CpuState &state, Bus &bus)
   bus.Write(--state.SP.reg, state.PC.low);
   state.PC.reg = addr;
   state.t_cycles += 16;
+}
+
+// Rotate-Shift
+
+void Executor::Rlca(CpuState &state)
+{
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, (state.AF.high & (1U << 7U)) >> 7U);
+
+  state.AF.high = state.AF.high << 1U;
+  state.AF.high = ((state.AF.high & ~(1U << 0U)) | ((state.AF.low & (1U << 4U)) >> 4U));
+
+  state.t_cycles += 4;
+}
+
+void Executor::Rla(CpuState &state)
+{
+  uint8_t oldCY = (state.AF.low & (1U << 4U)) >> 4U;
+
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, (state.AF.high & (1U << 7U)));
+
+  state.AF.high = state.AF.high << 1U;
+  state.AF.high = (state.AF.high & ~(1U << 0U)) | oldCY;
+
+  state.t_cycles += 4;
+}
+
+void Executor::Rrca(CpuState &state)
+{
+  uint8_t b0 = (state.AF.high & (1U << 0U));
+
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, b0);
+
+  state.AF.high = state.AF.high >> 1U;
+  state.AF.high = (state.AF.high & ~(1U << 7U)) | static_cast<uint8_t>(b0 << 7U);
+  state.t_cycles += 4;
+}
+
+void Executor::Rra(CpuState &state)
+{
+  uint8_t oldCY = (state.AF.low & (1U << 4U)) >> 4U;
+
+  SetZ(state, false);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, (state.AF.high & (1U << 0U)));
+
+  state.AF.high = state.AF.high >> 1U;
+  state.AF.high = (state.AF.high & ~(1U << 7U)) | static_cast<uint8_t>(oldCY << 7U);
+
+  state.t_cycles += 4;
 }
