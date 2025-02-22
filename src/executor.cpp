@@ -161,19 +161,30 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0xBD: Cp_R(state.HL.low, state); break;
     case 0xBE: Cp_HL(state, bus); break;
     case 0xBF: Cp_R(state.AF.high, state); break;
+    case 0xC1: Pop(state.BC, state, bus); break;
+    case 0xC5: Push(state.BC, state, bus); break;
     case 0xC6: Add_N(state, bus); break;
     case 0xCE: Adc_N(state, bus); break;
+    case 0xD1: Pop(state.DE, state, bus); break;
+    case 0xD5: Push(state.DE, state, bus); break;
     case 0xD6: Sub_N(state, bus); break;
     case 0xDE: Sbc_N(state, bus); break;
     case 0xE0: Load_N_A(state, bus); break;
+    case 0xE1: Pop(state.HL, state, bus); break;
     case 0xE2: Load_C_A(state, bus); break;
+    case 0xE5: Push(state.HL, state, bus); break;
     case 0xE6: And_N(state, bus); break;
     case 0xE8: Add_SP_E(state, bus); break;
     case 0xEE: Xor_N(state, bus); break;
     case 0xEA: Load_NN_A(state, bus); break;
     case 0xF0: Load_A_N(state, bus); break;
+    case 0xF1: {
+      Pop(state.AF, state, bus);
+      state.AF.low &= 0xF0U; // clear unused lower nibble
+    } break;
     case 0xF2: Load_A_C(state, bus); break;
     case 0xFA: Load_A_NN(state, bus); break;
+    case 0xF5: Push(state.AF, state, bus); break;
     case 0xF6: Or_N(state, bus); break;
     case 0xF8: Load_HL_SP_E(state, bus); break;
     case 0xFE: Cp_N(state, bus); break;
@@ -379,6 +390,20 @@ void Executor::Load_HL_SP_E(CpuState &state, Bus &bus)
 
   state.HL.reg = res;
   state.t_cycles += 12;
+}
+
+void Executor::Pop(Register &reg, CpuState &state, Bus &bus)
+{
+  reg.low = bus.Read(state.SP.reg++);
+  reg.high = bus.Read(state.SP.reg++);
+  state.t_cycles += 12;
+}
+
+void Executor::Push(Register &reg, CpuState &state, Bus &bus)
+{
+  bus.Write(--state.SP.reg, reg.high);
+  bus.Write(--state.SP.reg, reg.low);
+  state.t_cycles += 16;
 }
 
 // Arithmetic

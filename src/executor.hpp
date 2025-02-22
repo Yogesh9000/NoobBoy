@@ -38,6 +38,8 @@ private:
   void Load_A_C(CpuState &state, Bus &bus);
   void Load_SP_HL(CpuState &state, Bus &bus);
   void Load_HL_SP_E(CpuState &state, Bus &bus);
+  void Pop(Register &reg, CpuState &state, Bus &bus);
+  void Push(Register &reg, CpuState &state, Bus &bus);
 
   // Arithmetic
   void Add_R(uint8_t reg, CpuState &state);
