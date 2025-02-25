@@ -13,6 +13,10 @@ private:
 
   // Special
   void Nop(CpuState &state);
+  void Stop(CpuState &state);
+  void Halt(CpuState &state);
+  void Di(CpuState &state);
+  void Ei(CpuState &state);
 
   // Load
   void Load_R_R(uint8_t &dest, uint8_t src, CpuState &state);

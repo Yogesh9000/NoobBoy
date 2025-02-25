@@ -24,6 +24,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x0C: Inc_R(state.BC.low, state); break;
     case 0x0D: Dec_R(state.BC.low, state); break;
     case 0x0F: Rrca(state); break;
+    case 0x10: Stop(state); break;
     case 0x11: Load_RR_NN(state.DE.reg, state, bus); break;
     case 0x12: Load_DE_A(state, bus); break;
     case 0x13: Inc_RR(state.DE.reg, state); break;
@@ -125,6 +126,7 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x73: Load_HL_R(state.DE.low, state, bus); break;
     case 0x74: Load_HL_R(state.HL.high, state, bus); break;
     case 0x75: Load_HL_R(state.HL.low, state, bus); break;
+    case 0x76: Halt(state); break;
     case 0x77: Load_HL_R(state.AF.high, state, bus); break;
     case 0x78: Load_R_R(state.AF.high, state.BC.high, state); break;
     case 0x79: Load_R_R(state.AF.high, state.BC.low, state); break;
@@ -243,13 +245,15 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
       state.AF.low &= 0xF0U; // clear unused lower nibble
     } break;
     case 0xF2: Load_A_C(state, bus); break;
-    case 0xFA: Load_A_NN(state, bus); break;
+    case 0xF3: Di(state); break;
     case 0xF5: Push(state.AF, state, bus); break;
     case 0xF6: Or_N(state, bus); break;
     case 0xF7: Rst(0x30, state, bus); break;
     case 0xF8: Load_HL_SP_E(state, bus); break;
-    case 0xFE: Cp_N(state, bus); break;
     case 0xF9: Load_SP_HL(state, bus); break;
+    case 0xFA: Load_A_NN(state, bus); break;
+    case 0xFB: Ei(state); break;
+    case 0xFE: Cp_N(state, bus); break;
     case 0xFF: Rst(0x38, state, bus); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}{:#04x}{}", RED, BOLDRED, opcode, RESET));
@@ -285,6 +289,29 @@ void Executor::SetCY(CpuState &state, bool value)
 // Special
 void Executor::Nop(CpuState &state)
 {
+  state.t_cycles += 4;
+}
+
+void Executor::Stop(CpuState &state)
+{
+  // TODO:
+}
+
+void Executor::Halt(CpuState &state)
+{
+  // TODO:
+}
+
+void Executor::Di(CpuState &state)
+{
+  state.ime = false;
+  state.t_cycles += 4;
+}
+
+void Executor::Ei(CpuState &state)
+{
+  state.ie_delay = 2; // NOTE: Cpu must kepp reducing this delay befor each instruction, until it reaches zero
+                      //       Once delay reaches 0, set ime flag
   state.t_cycles += 4;
 }
 

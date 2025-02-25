@@ -51,6 +51,7 @@ struct CpuState
   Register SP;
   Register PC;
   bool ime;
+  uint8_t ie_delay;
 
   uint64_t t_cycles;
 
@@ -65,8 +66,8 @@ struct CpuState
 
 inline std::ostream &operator<<(std::ostream &os, const CpuState &state)
 {
-  os << std::format("{{A={}, B={}, C={}, D={}, E={}, H={}, L={}, F={}, SP={}, PC={}, ime={}, TCyles={}",
+  os << std::format("{{A={}, B={}, C={}, D={}, E={}, H={}, L={}, F={}, SP={}, PC={}, ime={}, ie_delay={}, TCyles={}",
     state.AF.high, state.BC.high, state.BC.low, state.DE.high, state.DE.low, state.HL.high,
-    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.ime, state.t_cycles);
+    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.ime, state.ie_delay, state.t_cycles);
   return os;
 }
