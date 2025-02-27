@@ -1229,6 +1229,94 @@ void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       state.t_cycles += 8;
     } break;
     case 0x3F: Srl(state.AF.high, state); break;
+    case 0x40: Bit(state.BC.high, 0, state); break;
+    case 0x41: Bit(state.BC.low,  0, state); break;
+    case 0x42: Bit(state.DE.high, 0, state); break;
+    case 0x43: Bit(state.DE.low,  0, state); break;
+    case 0x44: Bit(state.HL.high, 0, state); break;
+    case 0x45: Bit(state.HL.low,  0, state); break;
+    case 0x46: {
+      Bit(bus.Read(state.HL.reg), 0, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x47: Bit(state.AF.high, 0, state); break;
+    case 0x48: Bit(state.BC.high, 1, state); break;
+    case 0x49: Bit(state.BC.low,  1, state); break;
+    case 0x4A: Bit(state.DE.high, 1, state); break;
+    case 0x4B: Bit(state.DE.low,  1, state); break;
+    case 0x4C: Bit(state.HL.high, 1, state); break;
+    case 0x4D: Bit(state.HL.low,  1, state); break;
+    case 0x4E: {
+      Bit(bus.Read(state.HL.reg), 1, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x4F: Bit(state.AF.high, 1, state); break;
+    case 0x50: Bit(state.BC.high, 2, state); break;
+    case 0x51: Bit(state.BC.low,  2, state); break;
+    case 0x52: Bit(state.DE.high, 2, state); break;
+    case 0x53: Bit(state.DE.low,  2, state); break;
+    case 0x54: Bit(state.HL.high, 2, state); break;
+    case 0x55: Bit(state.HL.low,  2, state); break;
+    case 0x56: {
+      Bit(bus.Read(state.HL.reg), 2, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x57: Bit(state.AF.high, 2, state); break;
+    case 0x58: Bit(state.BC.high, 3, state); break;
+    case 0x59: Bit(state.BC.low,  3, state); break;
+    case 0x5A: Bit(state.DE.high, 3, state); break;
+    case 0x5B: Bit(state.DE.low,  3, state); break;
+    case 0x5C: Bit(state.HL.high, 3, state); break;
+    case 0x5D: Bit(state.HL.low,  3, state); break;
+    case 0x5E: {
+      Bit(bus.Read(state.HL.reg), 3, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x5F: Bit(state.AF.high, 3, state); break;
+    case 0x60: Bit(state.BC.high, 4, state); break;
+    case 0x61: Bit(state.BC.low,  4, state); break;
+    case 0x62: Bit(state.DE.high, 4, state); break;
+    case 0x63: Bit(state.DE.low,  4, state); break;
+    case 0x64: Bit(state.HL.high, 4, state); break;
+    case 0x65: Bit(state.HL.low,  4, state); break;
+    case 0x66: {
+      Bit(bus.Read(state.HL.reg), 4, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x67: Bit(state.AF.high, 4, state); break;
+    case 0x68: Bit(state.BC.high, 5, state); break;
+    case 0x69: Bit(state.BC.low,  5, state); break;
+    case 0x6A: Bit(state.DE.high, 5, state); break;
+    case 0x6B: Bit(state.DE.low,  5, state); break;
+    case 0x6C: Bit(state.HL.high, 5, state); break;
+    case 0x6D: Bit(state.HL.low,  5, state); break;
+    case 0x6E: {
+      Bit(bus.Read(state.HL.reg), 5, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x6F: Bit(state.AF.high, 5, state); break;
+    case 0x70: Bit(state.BC.high, 6, state); break;
+    case 0x71: Bit(state.BC.low,  6, state); break;
+    case 0x72: Bit(state.DE.high, 6, state); break;
+    case 0x73: Bit(state.DE.low,  6, state); break;
+    case 0x74: Bit(state.HL.high, 6, state); break;
+    case 0x75: Bit(state.HL.low,  6, state); break;
+    case 0x76: {
+      Bit(bus.Read(state.HL.reg), 6, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x77: Bit(state.AF.high, 6, state); break;
+    case 0x78: Bit(state.BC.high, 7, state); break;
+    case 0x79: Bit(state.BC.low,  7, state); break;
+    case 0x7A: Bit(state.DE.high, 7, state); break;
+    case 0x7B: Bit(state.DE.low,  7, state); break;
+    case 0x7C: Bit(state.HL.high, 7, state); break;
+    case 0x7D: Bit(state.HL.low,  7, state); break;
+    case 0x7E: {
+      Bit(bus.Read(state.HL.reg), 7, state);
+      state.t_cycles += 4;
+    } break;
+    case 0x7F: Bit(state.AF.high, 7, state); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
