@@ -1163,6 +1163,28 @@ void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       state.t_cycles += 8;
     } break;
     case 0x0F: Rrc(state.AF.high, state); break;
+    case 0x10: Rl(state.BC.high, state); break;
+    case 0x11: Rl(state.BC.low, state); break;
+    case 0x12: Rl(state.DE.high, state); break;
+    case 0x13: Rl(state.DE.low, state); break;
+    case 0x14: Rl(state.HL.high, state); break;
+    case 0x15: Rl(state.HL.low, state); break;
+    case 0x16: {
+      Rl(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x17: Rl(state.AF.high, state); break;
+    case 0x18: Rr(state.BC.high, state); break;
+    case 0x19: Rr(state.BC.low, state); break;
+    case 0x1A: Rr(state.DE.high, state); break;
+    case 0x1B: Rr(state.DE.low, state); break;
+    case 0x1C: Rr(state.HL.high, state); break;
+    case 0x1D: Rr(state.HL.low, state); break;
+    case 0x1E: {
+      Rr(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x1F: Rr(state.AF.high, state); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
@@ -1193,5 +1215,33 @@ void Executor::Rrc(uint8_t& reg, CpuState &state)
   SetH(state, false);
   SetCY(state, bit0 == 1U);
 
+  state.t_cycles += 8;
+}
+
+void Executor::Rl(uint8_t& reg, CpuState &state)
+{
+  uint8_t oldCY = (state.AF.low & (1U << 4U)) >> 4U;
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  reg = reg << 1U;
+  reg = (reg & ~(1U << 0U)) | (oldCY);
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, bit7 == 1U);
+  state.t_cycles += 8;
+}
+
+void Executor::Rr(uint8_t& reg, CpuState &state)
+{
+  uint8_t oldCY = (state.AF.low & (1U << 4U)) >> 4U;
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+  reg = (reg & ~(1U << 7U)) | (oldCY << 7U);
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, bit0 == 1U);
   state.t_cycles += 8;
 }
