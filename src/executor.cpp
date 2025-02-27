@@ -1405,6 +1405,94 @@ void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       state.t_cycles += 8;
     } break;
     case 0xBF: Res(state.AF.high, 7, state); break;
+    case 0xC0: Set(state.BC.high, 0, state); break;
+    case 0xC1: Set(state.BC.low,  0, state); break;
+    case 0xC2: Set(state.DE.high, 0, state); break;
+    case 0xC3: Set(state.DE.low,  0, state); break;
+    case 0xC4: Set(state.HL.high, 0, state); break;
+    case 0xC5: Set(state.HL.low,  0, state); break;
+    case 0xC6: {
+      Set(bus.Address(state.HL.reg), 0, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xC7: Set(state.AF.high, 0, state); break;
+    case 0xC8: Set(state.BC.high, 1, state); break;
+    case 0xC9: Set(state.BC.low,  1, state); break;
+    case 0xCA: Set(state.DE.high, 1, state); break;
+    case 0xCB: Set(state.DE.low,  1, state); break;
+    case 0xCC: Set(state.HL.high, 1, state); break;
+    case 0xCD: Set(state.HL.low,  1, state); break;
+    case 0xCE: {
+      Set(bus.Address(state.HL.reg), 1, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xCF: Set(state.AF.high, 1, state); break;
+    case 0xD0: Set(state.BC.high, 2, state); break;
+    case 0xD1: Set(state.BC.low,  2, state); break;
+    case 0xD2: Set(state.DE.high, 2, state); break;
+    case 0xD3: Set(state.DE.low,  2, state); break;
+    case 0xD4: Set(state.HL.high, 2, state); break;
+    case 0xD5: Set(state.HL.low,  2, state); break;
+    case 0xD6: {
+      Set(bus.Address(state.HL.reg), 2, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xD7: Set(state.AF.high, 2, state); break;
+    case 0xD8: Set(state.BC.high, 3, state); break;
+    case 0xD9: Set(state.BC.low,  3, state); break;
+    case 0xDA: Set(state.DE.high, 3, state); break;
+    case 0xDB: Set(state.DE.low,  3, state); break;
+    case 0xDC: Set(state.HL.high, 3, state); break;
+    case 0xDD: Set(state.HL.low,  3, state); break;
+    case 0xDE: {
+      Set(bus.Address(state.HL.reg), 3, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xDF: Set(state.AF.high, 3, state); break;
+    case 0xE0: Set(state.BC.high, 4, state); break;
+    case 0xE1: Set(state.BC.low,  4, state); break;
+    case 0xE2: Set(state.DE.high, 4, state); break;
+    case 0xE3: Set(state.DE.low,  4, state); break;
+    case 0xE4: Set(state.HL.high, 4, state); break;
+    case 0xE5: Set(state.HL.low,  4, state); break;
+    case 0xE6: {
+      Set(bus.Address(state.HL.reg), 4, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xE7: Set(state.AF.high, 4, state); break;
+    case 0xE8: Set(state.BC.high, 5, state); break;
+    case 0xE9: Set(state.BC.low,  5, state); break;
+    case 0xEA: Set(state.DE.high, 5, state); break;
+    case 0xEB: Set(state.DE.low,  5, state); break;
+    case 0xEC: Set(state.HL.high, 5, state); break;
+    case 0xED: Set(state.HL.low,  5, state); break;
+    case 0xEE: {
+      Set(bus.Address(state.HL.reg), 5, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xEF: Set(state.AF.high, 5, state); break;
+    case 0xF0: Set(state.BC.high, 6, state); break;
+    case 0xF1: Set(state.BC.low,  6, state); break;
+    case 0xF2: Set(state.DE.high, 6, state); break;
+    case 0xF3: Set(state.DE.low,  6, state); break;
+    case 0xF4: Set(state.HL.high, 6, state); break;
+    case 0xF5: Set(state.HL.low,  6, state); break;
+    case 0xF6: {
+      Set(bus.Address(state.HL.reg), 6, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xF7: Set(state.AF.high, 6, state); break;
+    case 0xF8: Set(state.BC.high, 7, state); break;
+    case 0xF9: Set(state.BC.low,  7, state); break;
+    case 0xFA: Set(state.DE.high, 7, state); break;
+    case 0xFB: Set(state.DE.low,  7, state); break;
+    case 0xFC: Set(state.HL.high, 7, state); break;
+    case 0xFD: Set(state.HL.low,  7, state); break;
+    case 0xFE: {
+      Set(bus.Address(state.HL.reg), 7, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xFF: Set(state.AF.high, 7, state); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
@@ -1517,5 +1605,28 @@ void Executor::Swap(uint8_t&reg, CpuState &state)
   SetH(state, false);
   SetCY(state, false);
 
+  state.t_cycles += 8;
+}
+
+
+void Executor::Bit(uint8_t reg, uint8_t bit, CpuState &state)
+{ 
+  uint8_t bitX = (reg & (1U << bit)) >> bit;
+  state.AF.low = (state.AF.low & ~(1U << 7U)) | ((!bitX) << 7U);
+  SetN(state, false);
+  SetH(state, true);
+
+  state.t_cycles += 8;
+}
+
+void Executor::Res(uint8_t &reg, uint8_t bit, CpuState &state)
+{
+  reg = (reg & ~(1U << bit));
+  state.t_cycles += 8;
+}
+
+void Executor::Set(uint8_t &reg, uint8_t bit, CpuState &state)
+{
+  reg = (reg & ~(1U << bit)) | (1U << bit);
   state.t_cycles += 8;
 }
