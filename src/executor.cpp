@@ -16,13 +16,13 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x05: Dec_R(state.BC.high, state); break;
     case 0x06: Load_R_N(state.BC.high, state, bus); break;
     case 0x07: Rlca(state); break;
-    case 0x0E: Load_R_N(state.BC.low, state, bus); break;
     case 0x08: Load_NN_SP(state, bus); break;
     case 0x09: Add_HL_RR(state.BC.reg, state); break;
     case 0x0A: Load_A_BC(state, bus); break;
     case 0x0B: Dec_RR(state.BC.reg, state); break;
     case 0x0C: Inc_R(state.BC.low, state); break;
     case 0x0D: Dec_R(state.BC.low, state); break;
+    case 0x0E: Load_R_N(state.BC.low, state, bus); break;
     case 0x0F: Rrca(state); break;
     case 0x10: Stop(state); break;
     case 0x11: Load_RR_NN(state.DE.reg, state, bus); break;
@@ -50,11 +50,11 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x27: Daa(state); break;
     case 0x28: Jr_CC_E((state.AF.low & (1U << 7U)) != 0, state, bus) ;break;
     case 0x29: Add_HL_RR(state.HL.reg, state); break;
+    case 0x2A: Load_A_HL_Pos(state, bus); break;
     case 0x2B: Dec_RR(state.HL.reg, state); break;
     case 0x2C: Inc_R(state.HL.low, state); break;
     case 0x2D: Dec_R(state.HL.low, state); break;
     case 0x2E: Load_R_N(state.HL.low, state, bus); break;
-    case 0x2A: Load_A_HL_Pos(state, bus); break;
     case 0x2F: Cpl(state); break;
     case 0x30: Jr_CC_E((state.AF.low & (1U << 4U)) == 0, state, bus) ;break;
     case 0x31: Load_RR_NN(state.SP.reg, state, bus); break;
@@ -64,13 +64,13 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x35: Dec_HL(state, bus); break;
     case 0x36: Load_HL_N(state, bus); break;
     case 0x37: Scf(state); break;
-    case 0x3E: Load_R_N(state.AF.high, state, bus); break;
     case 0x38: Jr_CC_E((state.AF.low & (1U << 4U)) != 0, state, bus) ;break;
     case 0x39: Add_HL_RR(state.SP.reg, state); break;
+    case 0x3A: Load_A_HL_Neg(state, bus); break;
     case 0x3B: Dec_RR(state.SP.reg, state); break;
     case 0x3C: Inc_R(state.AF.high, state); break;
     case 0x3D: Dec_R(state.AF.high, state); break;
-    case 0x3A: Load_A_HL_Neg(state, bus); break;
+    case 0x3E: Load_R_N(state.AF.high, state, bus); break;
     case 0x3F: Ccf(state); break;
     case 0x40: Load_R_R(state.BC.high, state.BC.high, state); break;
     case 0x41: Load_R_R(state.BC.high, state.BC.low, state); break;
@@ -210,10 +210,11 @@ void Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0xC7: Rst(0x00, state, bus); break;
     case 0xC8: Ret_CC((state.AF.low & (1U << 7U)) != 0, state, bus); break;
     case 0xC9: Ret(state, bus); break;
+    case 0xCA: Jp_CC_NN((state.AF.low & (1U << 7U)) != 0, state, bus); break;
+    case 0xCB: DecodeAndExecuteCB(bus.Read(state.PC.reg++), state, bus); break; // cb prefixed instructions
     case 0xCC: Call_CC_NN((state.AF.low & (1U << 7U)) != 0, state, bus); break;
     case 0xCD: Call_NN(state, bus); break;
     case 0xCE: Adc_N(state, bus); break;
-    case 0xCA: Jp_CC_NN((state.AF.low & (1U << 7U)) != 0, state, bus); break;
     case 0xCF: Rst(0x08, state, bus); break;
     case 0xD0: Ret_CC((state.AF.low & (1U << 4U)) == 0, state, bus); break;
     case 0xD1: Pop(state.DE, state, bus); break;
