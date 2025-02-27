@@ -1207,6 +1207,28 @@ void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       state.t_cycles += 8;
     } break;
     case 0x2F: Sra(state.AF.high, state); break;
+    case 0x30: Swap(state.BC.high, state); break;
+    case 0x31: Swap(state.BC.low, state); break;
+    case 0x32: Swap(state.DE.high, state); break;
+    case 0x33: Swap(state.DE.low, state); break;
+    case 0x34: Swap(state.HL.high, state); break;
+    case 0x35: Swap(state.HL.low, state); break;
+    case 0x36: {
+      Swap(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x37: Swap(state.AF.high, state); break;
+    case 0x38: Srl(state.BC.high, state); break;
+    case 0x39: Srl(state.BC.low, state); break;
+    case 0x3A: Srl(state.DE.high, state); break;
+    case 0x3B: Srl(state.DE.low, state); break;
+    case 0x3C: Srl(state.HL.high, state); break;
+    case 0x3D: Srl(state.HL.low, state); break;
+    case 0x3E: {
+      Srl(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x3F: Srl(state.AF.high, state); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
@@ -1291,6 +1313,33 @@ void Executor::Sra(uint8_t& reg, CpuState &state)
   SetN(state, false);
   SetH(state, false);
   SetCY(state, bit0 == 1U);
+
+  state.t_cycles += 8;
+}
+
+void Executor::Srl(uint8_t& reg, CpuState &state)
+{
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, bit0 == 1U);
+
+  state.t_cycles += 8;
+}
+
+void Executor::Swap(uint8_t&reg, CpuState &state)
+{
+  uint8_t lowerNibble = (reg & 0x0FU);
+  reg = reg >> 4U;
+  reg = (reg & (0x0FU)) | (lowerNibble << 4U);
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, false);
 
   state.t_cycles += 8;
 }

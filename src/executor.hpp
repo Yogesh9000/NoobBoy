@@ -123,6 +123,8 @@ private:
   void Rr(uint8_t &reg, CpuState &state);
   void Sla(uint8_t &reg, CpuState &state);
   void Sra(uint8_t &reg, CpuState &state);
+  void Swap(uint8_t &reg, CpuState &state);
+  void Srl(uint8_t &reg, CpuState &state);
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);
