@@ -1317,6 +1317,94 @@ void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       state.t_cycles += 4;
     } break;
     case 0x7F: Bit(state.AF.high, 7, state); break;
+    case 0x80: Res(state.BC.high, 0, state); break;
+    case 0x81: Res(state.BC.low,  0, state); break;
+    case 0x82: Res(state.DE.high, 0, state); break;
+    case 0x83: Res(state.DE.low,  0, state); break;
+    case 0x84: Res(state.HL.high, 0, state); break;
+    case 0x85: Res(state.HL.low,  0, state); break;
+    case 0x86: {
+      Res(bus.Address(state.HL.reg), 0, state);
+      state.t_cycles += 8;
+    } break;
+    case 0x87: Res(state.AF.high, 0, state); break;
+    case 0x88: Res(state.BC.high, 1, state); break;
+    case 0x89: Res(state.BC.low,  1, state); break;
+    case 0x8A: Res(state.DE.high, 1, state); break;
+    case 0x8B: Res(state.DE.low,  1, state); break;
+    case 0x8C: Res(state.HL.high, 1, state); break;
+    case 0x8D: Res(state.HL.low,  1, state); break;
+    case 0x8E: {
+      Res(bus.Address(state.HL.reg), 1, state);
+      state.t_cycles += 8;
+    } break;
+    case 0x8F: Res(state.AF.high, 1, state); break;
+    case 0x90: Res(state.BC.high, 2, state); break;
+    case 0x91: Res(state.BC.low,  2, state); break;
+    case 0x92: Res(state.DE.high, 2, state); break;
+    case 0x93: Res(state.DE.low,  2, state); break;
+    case 0x94: Res(state.HL.high, 2, state); break;
+    case 0x95: Res(state.HL.low,  2, state); break;
+    case 0x96: {
+      Res(bus.Address(state.HL.reg), 2, state);
+      state.t_cycles += 8;
+    } break;
+    case 0x97: Res(state.AF.high, 2, state); break;
+    case 0x98: Res(state.BC.high, 3, state); break;
+    case 0x99: Res(state.BC.low,  3, state); break;
+    case 0x9A: Res(state.DE.high, 3, state); break;
+    case 0x9B: Res(state.DE.low,  3, state); break;
+    case 0x9C: Res(state.HL.high, 3, state); break;
+    case 0x9D: Res(state.HL.low,  3, state); break;
+    case 0x9E: {
+      Res(bus.Address(state.HL.reg), 3, state);
+      state.t_cycles += 8;
+    } break;
+    case 0x9F: Res(state.AF.high, 3, state); break;
+    case 0xA0: Res(state.BC.high, 4, state); break;
+    case 0xA1: Res(state.BC.low,  4, state); break;
+    case 0xA2: Res(state.DE.high, 4, state); break;
+    case 0xA3: Res(state.DE.low,  4, state); break;
+    case 0xA4: Res(state.HL.high, 4, state); break;
+    case 0xA5: Res(state.HL.low,  4, state); break;
+    case 0xA6: {
+      Res(bus.Address(state.HL.reg), 4, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xA7: Res(state.AF.high, 4, state); break;
+    case 0xA8: Res(state.BC.high, 5, state); break;
+    case 0xA9: Res(state.BC.low,  5, state); break;
+    case 0xAA: Res(state.DE.high, 5, state); break;
+    case 0xAB: Res(state.DE.low,  5, state); break;
+    case 0xAC: Res(state.HL.high, 5, state); break;
+    case 0xAD: Res(state.HL.low,  5, state); break;
+    case 0xAE: {
+      Res(bus.Address(state.HL.reg), 5, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xAF: Res(state.AF.high, 5, state); break;
+    case 0xB0: Res(state.BC.high, 6, state); break;
+    case 0xB1: Res(state.BC.low,  6, state); break;
+    case 0xB2: Res(state.DE.high, 6, state); break;
+    case 0xB3: Res(state.DE.low,  6, state); break;
+    case 0xB4: Res(state.HL.high, 6, state); break;
+    case 0xB5: Res(state.HL.low,  6, state); break;
+    case 0xB6: {
+      Res(bus.Address(state.HL.reg), 6, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xB7: Res(state.AF.high, 6, state); break;
+    case 0xB8: Res(state.BC.high, 7, state); break;
+    case 0xB9: Res(state.BC.low,  7, state); break;
+    case 0xBA: Res(state.DE.high, 7, state); break;
+    case 0xBB: Res(state.DE.low,  7, state); break;
+    case 0xBC: Res(state.HL.high, 7, state); break;
+    case 0xBD: Res(state.HL.low,  7, state); break;
+    case 0xBE: {
+      Res(bus.Address(state.HL.reg), 7, state);
+      state.t_cycles += 8;
+    } break;
+    case 0xBF: Res(state.AF.high, 7, state); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }

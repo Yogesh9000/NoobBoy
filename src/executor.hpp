@@ -126,6 +126,7 @@ private:
   void Swap(uint8_t &reg, CpuState &state);
   void Srl(uint8_t &reg, CpuState &state);
   void Bit(uint8_t reg, uint8_t bit, CpuState &state);
+  void Res(uint8_t &reg, uint8_t bit, CpuState &state);
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);
