@@ -84,3 +84,32 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
       }                                                                                                       \
     }                                                                                                         \
   }
+
+// Define the test macro
+#define DEFINE_TEST_CB(TEST_SUITE_NAME, TEST_NAME)                                                               \
+  TEST(TEST_SUITE_NAME, TEST_NAME)                                                                            \
+  {                                                                                                           \
+    std::ifstream file{ "data/cb " EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                    \
+    ASSERT_TRUE(file.is_open());                                                                              \
+    json tests = json::parse(file);                                                                           \
+    SimpleBus bus{};                                                                                          \
+    Executor executor;                                                                                        \
+    for (const auto &test : tests)                                                                            \
+    {                                                                                                         \
+      auto initialState = CreateInitialStateFromJson(test);                                                   \
+      auto finalState = CreateFinalStateFromJson(test);                                                       \
+      bus.Reset();                                                                                            \
+      InitializeBusFromJson(bus, test["initial"], test["initial"]["ie"]);                                     \
+      auto opcode = bus.Read(initialState.PC.reg++);                                                          \
+      executor.DecodeAndExecute(opcode, initialState, bus);                                                   \
+      ASSERT_EQ(initialState, finalState)                                                                     \
+        << std::format("Test Name: {} [Final State does not match]", static_cast<std::string>(test["name"])); \
+      for (const auto &memState : test["final"]["ram"])                                                       \
+      {                                                                                                       \
+        uint16_t loc = memState[0];                                                                           \
+        uint8_t data = memState[1];                                                                           \
+        ASSERT_EQ(bus.Read(loc), data) << std::format(                                                        \
+          "Test Name: {} [Memory State Does not Match]", static_cast<std::string>(test["name"]));             \
+      }                                                                                                       \
+    }                                                                                                         \
+  }
