@@ -8,6 +8,7 @@ class Executor
 {
 public:
   void DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus);
+  void DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus);
 
 private:
 
@@ -115,6 +116,10 @@ private:
   void Rrca(CpuState &state);
   void Rra(CpuState &state);
 
+  //===============CB Prefixed Instrucitons=======================
+  void Rlc(uint8_t &reg, CpuState &state);
+  void Rrc(uint8_t &reg, CpuState &state);
+  void Rl(uint8_t &reg, CpuState &state);
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
   static void SetZ(CpuState &state, bool value);

@@ -1134,3 +1134,64 @@ void Executor::Rra(CpuState &state)
 
   state.t_cycles += 4;
 }
+
+// CB Prefixed
+
+void Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
+{
+  switch (opcode)
+  {
+    case 0x00: Rlc(state.BC.high, state); break;
+    case 0x01: Rlc(state.BC.low, state); break;
+    case 0x02: Rlc(state.DE.high, state); break;
+    case 0x03: Rlc(state.DE.low, state); break;
+    case 0x04: Rlc(state.HL.high, state); break;
+    case 0x05: Rlc(state.HL.low, state); break;
+    case 0x06: {
+      Rlc(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x07: Rlc(state.AF.high, state); break;
+    case 0x08: Rrc(state.BC.high, state); break;
+    case 0x09: Rrc(state.BC.low, state); break;
+    case 0x0A: Rrc(state.DE.high, state); break;
+    case 0x0B: Rrc(state.DE.low, state); break;
+    case 0x0C: Rrc(state.HL.high, state); break;
+    case 0x0D: Rrc(state.HL.low, state); break;
+    case 0x0E: {
+      Rrc(bus.Address(state.HL.reg), state);
+      state.t_cycles += 8;
+    } break;
+    case 0x0F: Rrc(state.AF.high, state); break;
+    default:
+      throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
+  }
+
+}
+
+void Executor::Rlc(uint8_t& reg, CpuState &state)
+{
+  uint8_t bit7 = (reg & 0x80U) >> 7U;
+  reg = reg << 1U;
+  reg = (reg & ~(1U << 0U)) | (bit7);
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, bit7 == 1U);
+  state.t_cycles += 8;
+}
+
+void Executor::Rrc(uint8_t& reg, CpuState &state)
+{
+  uint8_t bit0 = (reg & 0x01U);
+  reg = reg >> 1U;
+  reg = (reg & ~(1U << 7U)) | (bit0 << 7U);
+
+  SetZ(state, reg == 0);
+  SetN(state, false);
+  SetH(state, false);
+  SetCY(state, bit0 == 1U);
+
+  state.t_cycles += 8;
+}
