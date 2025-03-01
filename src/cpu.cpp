@@ -22,9 +22,21 @@ void Cpu::ResetState()
 }
 
 
-void Step()
+void Cpu::Tick()
 {
   throw NotImplemented("Cpu is not yet functional");
+  if (m_state.ie_delay)
+  {
+    --m_state.ie_delay;
+    m_state.ime = m_state.ie_delay == 0;
+  }
+
+  if (m_state.Ishalted)
+    return;
+
+  auto opcode = m_bus.Read(m_state.PC.reg);
+  ++m_state.PC.reg; // increment Program Counter
+  m_executor.DecodeAndExecute(opcode, m_state, m_bus);
 }
 
 void Cpu::SetInitialState()
