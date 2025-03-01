@@ -50,7 +50,7 @@ struct CpuState
   Register HL;
   Register SP;
   Register PC;
-  bool halted;
+  bool Ishalted;
   bool ime;
   uint8_t ie_delay;
 
@@ -59,7 +59,7 @@ struct CpuState
   bool operator==(const CpuState &state) const
   {
     return (AF.reg == state.AF.reg) && (BC.reg == state.BC.reg) && (DE.reg == state.DE.reg) && (HL.reg == state.HL.reg)
-           && (SP.reg == state.SP.reg) && (PC.reg == state.PC.reg) && (halted == state.halted) && (ime == state.ime)
+           && (SP.reg == state.SP.reg) && (PC.reg == state.PC.reg) && (Ishalted == state.Ishalted) && (ime == state.ime)
            && (t_cycles == state.t_cycles);
   }
 
@@ -70,6 +70,6 @@ inline std::ostream &operator<<(std::ostream &os, const CpuState &state)
 {
   os << std::format("{{A={}, B={}, C={}, D={}, E={}, H={}, L={}, F={}, SP={}, PC={}, halted={}, ime={}, ie_delay={}, TCyles={}",
     state.AF.high, state.BC.high, state.BC.low, state.DE.high, state.DE.low, state.HL.high,
-    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.halted, state.ime, state.ie_delay, state.t_cycles);
+    state.HL.low, state.AF.low, state.SP.reg, state.PC.reg, state.Ishalted, state.ime, state.ie_delay, state.t_cycles);
   return os;
 }

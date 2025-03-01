@@ -301,7 +301,7 @@ void Executor::Stop(CpuState &state)
 
 void Executor::Halt(CpuState &state)
 {
-  state.halted = true;
+  state.Ishalted = true;
   state.t_cycles += 4;
 }
 
