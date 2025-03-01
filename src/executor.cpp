@@ -296,11 +296,13 @@ void Executor::Nop(CpuState &state)
 void Executor::Stop(CpuState &state)
 {
   // TODO:
+  state.t_cycles += 4;
 }
 
 void Executor::Halt(CpuState &state)
 {
-  // TODO:
+  state.halted = true;
+  state.t_cycles += 4;
 }
 
 void Executor::Di(CpuState &state)
