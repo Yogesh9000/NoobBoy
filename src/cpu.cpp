@@ -47,4 +47,8 @@ void Cpu::SetInitialState()
   m_state.HL.reg = 0x014D;
   m_state.SP.reg = 0xFFFE;
   m_state.PC.reg = 0x0100;
+  m_state.ime = false;
+  m_state.Ishalted = false;
+  m_state.ie_delay = 0;
+  m_state.t_cycles = 0;
 }
