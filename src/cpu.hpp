@@ -21,6 +21,7 @@ public:
   void Tick();
 
 private:
+  void HandleInterrupts();
   // helper methods
   void SetInitialState();
 
