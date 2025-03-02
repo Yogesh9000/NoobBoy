@@ -18,9 +18,10 @@ public:
   // Reset Cpu state to initial state
   void ResetState();
 
-  void Step();
+  void Tick();
 
 private:
+  void HandleInterrupts();
   // helper methods
   void SetInitialState();
 
