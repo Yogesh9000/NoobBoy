@@ -25,11 +25,22 @@ public:
 
 private:
   void HandleInterrupts();
+  void UpdateTimers();
+  void UpdateDividerRegister();
+
   // helper methods
   void SetInitialState();
+  uint8_t GetClockFreq();
+  void SetClockFreq();
+  bool IsClockEnabled();
 
   // internal state of cpu
   CpuState m_state{};
   Bus &m_bus;
   Executor  m_executor{};
+
+  uint64_t m_cycles{0}; // cycles taken by last instruction to execute
+  int m_timerFreq{0};
+  int m_timerCounter{1024};
+  int m_dividerCounter{0};
 };
