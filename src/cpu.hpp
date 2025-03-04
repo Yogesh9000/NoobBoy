@@ -3,6 +3,7 @@
 #include "common.hpp"
 #include "bus.hpp"
 #include "executor.hpp"
+#include <cstdint>
 
 class Cpu
 {
@@ -19,6 +20,8 @@ public:
   void ResetState();
 
   void Tick();
+
+  void RequestInterrupt(uint8_t id);
 
 private:
   void HandleInterrupts();

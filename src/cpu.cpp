@@ -91,6 +91,12 @@ void Cpu::HandleInterrupts()
   }
 }
 
+void Cpu::RequestInterrupt(uint8_t id)
+{
+  uint8_t IF = m_bus.Address(0xFF0F);
+  IF |= (1U << id);
+}
+
 void Cpu::SetInitialState()
 {
   m_state.AF.reg = 0x01B0;
