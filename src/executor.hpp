@@ -7,127 +7,127 @@
 class Executor
 {
 public:
-  void DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus);
-  void DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus);
+  int DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus);
 
 private:
+  int DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus);
 
   // Special
-  void Nop(CpuState &state);
-  void Stop(CpuState &state);
-  void Halt(CpuState &state);
-  void Di(CpuState &state);
-  void Ei(CpuState &state);
+  int Nop(CpuState &state);
+  int Stop(CpuState &state);
+  int Halt(CpuState &state);
+  int Di(CpuState &state);
+  int Ei(CpuState &state);
 
   // Load
-  void Load_R_R(uint8_t &dest, uint8_t src, CpuState &state);
-  void Load_R_N(uint8_t &dest, CpuState &state, Bus &bus);
-  void Load_RR_NN(uint16_t& dest, CpuState &state, Bus &bus);
-  void Load_R_HL(uint8_t &dest, CpuState &state, Bus &bus);
-  void Load_HL_R(uint8_t &src, CpuState &state, Bus &bus);
-  void Load_HL_N(CpuState &state, Bus &bus);
-  void Load_A_BC(CpuState &state, Bus &bus);
-  void Load_A_DE(CpuState &state, Bus &bus);
-  void Load_BC_A(CpuState &state, Bus &bus);
-  void Load_DE_A(CpuState &state, Bus &bus);
-  void Load_A_NN(CpuState &state, Bus &bus);
-  void Load_NN_A(CpuState &state, Bus &bus);
-  void Load_HL_A_Neg(CpuState &state, Bus &bus);
-  void Load_HL_A_Pos(CpuState &state, Bus &bus);
-  void Load_A_HL_Neg(CpuState &state, Bus &bus);
-  void Load_A_HL_Pos(CpuState &state, Bus &bus);
-  void Load_NN_SP(CpuState &state, Bus &bus);
-  void Load_N_A(CpuState &state, Bus &bus);
-  void Load_A_N(CpuState &state, Bus &bus);
-  void Load_C_A(CpuState &state, Bus &bus);
-  void Load_A_C(CpuState &state, Bus &bus);
-  void Load_SP_HL(CpuState &state, Bus &bus);
-  void Load_HL_SP_E(CpuState &state, Bus &bus);
-  void Pop(Register &reg, CpuState &state, Bus &bus);
-  void Push(Register &reg, CpuState &state, Bus &bus);
+  int Load_R_R(uint8_t &dest, uint8_t src, CpuState &state);
+  int Load_R_N(uint8_t &dest, CpuState &state, Bus &bus);
+  int Load_RR_NN(uint16_t& dest, CpuState &state, Bus &bus);
+  int Load_R_HL(uint8_t &dest, CpuState &state, Bus &bus);
+  int Load_HL_R(uint8_t &src, CpuState &state, Bus &bus);
+  int Load_HL_N(CpuState &state, Bus &bus);
+  int Load_A_BC(CpuState &state, Bus &bus);
+  int Load_A_DE(CpuState &state, Bus &bus);
+  int Load_BC_A(CpuState &state, Bus &bus);
+  int Load_DE_A(CpuState &state, Bus &bus);
+  int Load_A_NN(CpuState &state, Bus &bus);
+  int Load_NN_A(CpuState &state, Bus &bus);
+  int Load_HL_A_Neg(CpuState &state, Bus &bus);
+  int Load_HL_A_Pos(CpuState &state, Bus &bus);
+  int Load_A_HL_Neg(CpuState &state, Bus &bus);
+  int Load_A_HL_Pos(CpuState &state, Bus &bus);
+  int Load_NN_SP(CpuState &state, Bus &bus);
+  int Load_N_A(CpuState &state, Bus &bus);
+  int Load_A_N(CpuState &state, Bus &bus);
+  int Load_C_A(CpuState &state, Bus &bus);
+  int Load_A_C(CpuState &state, Bus &bus);
+  int Load_SP_HL(CpuState &state, Bus &bus);
+  int Load_HL_SP_E(CpuState &state, Bus &bus);
+  int Pop(Register &reg, CpuState &state, Bus &bus);
+  int Push(Register &reg, CpuState &state, Bus &bus);
 
   // Arithmetic
-  void Add_R(uint8_t reg, CpuState &state);
-  void Add_HL(CpuState &state, Bus &bus);
-  void Add_N(CpuState &state, Bus &bus);
-  void Add_HL_RR(uint16_t src, CpuState &state);
-  void Add_SP_E(CpuState &state, Bus &bus);
+  int Add_R(uint8_t reg, CpuState &state);
+  int Add_HL(CpuState &state, Bus &bus);
+  int Add_N(CpuState &state, Bus &bus);
+  int Add_HL_RR(uint16_t src, CpuState &state);
+  int Add_SP_E(CpuState &state, Bus &bus);
 
-  void Adc_R(uint8_t reg, CpuState &state);
-  void Adc_HL(CpuState &state, Bus &bus);
-  void Adc_N(CpuState &state, Bus &bus);
+  int Adc_R(uint8_t reg, CpuState &state);
+  int Adc_HL(CpuState &state, Bus &bus);
+  int Adc_N(CpuState &state, Bus &bus);
 
-  void Sub_R(uint8_t reg, CpuState &state);
-  void Sub_HL(CpuState &state, Bus &bus);
-  void Sub_N(CpuState &state, Bus &bus);
+  int Sub_R(uint8_t reg, CpuState &state);
+  int Sub_HL(CpuState &state, Bus &bus);
+  int Sub_N(CpuState &state, Bus &bus);
 
-  void Sbc_R(uint8_t reg, CpuState &state);
-  void Sbc_HL(CpuState &state, Bus &bus);
-  void Sbc_N(CpuState &state, Bus &bus);
+  int Sbc_R(uint8_t reg, CpuState &state);
+  int Sbc_HL(CpuState &state, Bus &bus);
+  int Sbc_N(CpuState &state, Bus &bus);
 
-  void And_R(uint8_t reg, CpuState &state);
-  void And_HL(CpuState &state, Bus &bus);
-  void And_N(CpuState &state, Bus &bus);
+  int And_R(uint8_t reg, CpuState &state);
+  int And_HL(CpuState &state, Bus &bus);
+  int And_N(CpuState &state, Bus &bus);
 
-  void Xor_R(uint8_t reg, CpuState &state);
-  void Xor_HL(CpuState &state, Bus &bus);
-  void Xor_N(CpuState &state, Bus &bus);
+  int Xor_R(uint8_t reg, CpuState &state);
+  int Xor_HL(CpuState &state, Bus &bus);
+  int Xor_N(CpuState &state, Bus &bus);
   
-  void Or_R(uint8_t reg, CpuState &state);
-  void Or_HL(CpuState &state, Bus &bus);
-  void Or_N(CpuState &state, Bus &bus);
+  int Or_R(uint8_t reg, CpuState &state);
+  int Or_HL(CpuState &state, Bus &bus);
+  int Or_N(CpuState &state, Bus &bus);
 
-  void Cp_R(uint8_t reg, CpuState &state);
-  void Cp_HL(CpuState &state, Bus &bus);
-  void Cp_N(CpuState &state, Bus &bus);
+  int Cp_R(uint8_t reg, CpuState &state);
+  int Cp_HL(CpuState &state, Bus &bus);
+  int Cp_N(CpuState &state, Bus &bus);
 
-  void Inc_R(uint8_t &src, CpuState &state);
-  void Inc_RR(uint16_t &src, CpuState &state);
-  void Inc_HL(CpuState &state, Bus &bus);
+  int Inc_R(uint8_t &src, CpuState &state);
+  int Inc_RR(uint16_t &src, CpuState &state);
+  int Inc_HL(CpuState &state, Bus &bus);
 
-  void Dec_R(uint8_t &src, CpuState &state);
-  void Dec_RR(uint16_t &src, CpuState &state);
-  void Dec_HL(CpuState &state, Bus &bus);
+  int Dec_R(uint8_t &src, CpuState &state);
+  int Dec_RR(uint16_t &src, CpuState &state);
+  int Dec_HL(CpuState &state, Bus &bus);
 
-  void Ccf(CpuState &state);
-  void Scf(CpuState &state);
-  void Daa(CpuState &state);
-  void Cpl(CpuState &state);
+  int Ccf(CpuState &state);
+  int Scf(CpuState &state);
+  int Daa(CpuState &state);
+  int Cpl(CpuState &state);
 
   // Control Flow
-  void Jp_NN(CpuState &state, Bus &bus);
-  void Jp_HL(CpuState &state);
-  void Jp_CC_NN(bool jmp, CpuState &state, Bus &bus);
+  int Jp_NN(CpuState &state, Bus &bus);
+  int Jp_HL(CpuState &state);
+  int Jp_CC_NN(bool jmp, CpuState &state, Bus &bus);
 
-  void Jr_E(CpuState &state, Bus &bus);
-  void Jr_CC_E(bool jmp, CpuState &state, Bus &bus);
+  int Jr_E(CpuState &state, Bus &bus);
+  int Jr_CC_E(bool jmp, CpuState &state, Bus &bus);
 
-  void Call_NN(CpuState &state, Bus &bus);
-  void Call_CC_NN(bool call, CpuState &state, Bus &bus);
+  int Call_NN(CpuState &state, Bus &bus);
+  int Call_CC_NN(bool call, CpuState &state, Bus &bus);
 
-  void Ret(CpuState &state, Bus &bus);
-  void Ret_CC(bool ret, CpuState &state, Bus &bus);
-  void RetI(CpuState &state, Bus &bus);
-  void Rst(uint8_t addr, CpuState &state, Bus &bus);
+  int Ret(CpuState &state, Bus &bus);
+  int Ret_CC(bool ret, CpuState &state, Bus &bus);
+  int RetI(CpuState &state, Bus &bus);
+  int Rst(uint8_t addr, CpuState &state, Bus &bus);
 
   // Rotate-Shift
-  void Rlca(CpuState &state);
-  void Rla(CpuState &state);
-  void Rrca(CpuState &state);
-  void Rra(CpuState &state);
+  int Rlca(CpuState &state);
+  int Rla(CpuState &state);
+  int Rrca(CpuState &state);
+  int Rra(CpuState &state);
 
   //===============CB Prefixed Instrucitons=======================
-  void Rlc(uint8_t &reg, CpuState &state);
-  void Rrc(uint8_t &reg, CpuState &state);
-  void Rl(uint8_t &reg, CpuState &state);
-  void Rr(uint8_t &reg, CpuState &state);
-  void Sla(uint8_t &reg, CpuState &state);
-  void Sra(uint8_t &reg, CpuState &state);
-  void Swap(uint8_t &reg, CpuState &state);
-  void Srl(uint8_t &reg, CpuState &state);
-  void Bit(uint8_t reg, uint8_t bit, CpuState &state);
-  void Res(uint8_t &reg, uint8_t bit, CpuState &state);
-  void Set(uint8_t &reg, uint8_t bit, CpuState &state);
+  int Rlc(uint8_t &reg, CpuState &state);
+  int Rrc(uint8_t &reg, CpuState &state);
+  int Rl(uint8_t &reg, CpuState &state);
+  int Rr(uint8_t &reg, CpuState &state);
+  int Sla(uint8_t &reg, CpuState &state);
+  int Sra(uint8_t &reg, CpuState &state);
+  int Swap(uint8_t &reg, CpuState &state);
+  int Srl(uint8_t &reg, CpuState &state);
+  int Bit(uint8_t reg, uint8_t bit, CpuState &state);
+  int Res(uint8_t &reg, uint8_t bit, CpuState &state);
+  int Set(uint8_t &reg, uint8_t bit, CpuState &state);
 
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);
