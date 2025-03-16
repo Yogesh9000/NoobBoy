@@ -288,7 +288,6 @@ void Executor::SetCY(CpuState &state, bool value)
   state.AF.low = (state.AF.low & ~(1U << 4U)) | static_cast<uint8_t>(value << 4U);
 }
 
-// TODO: remove unused variable from methods
 // NOLINTBEGIN(readability-convert-member-functions-to-static)
 
 // Special
