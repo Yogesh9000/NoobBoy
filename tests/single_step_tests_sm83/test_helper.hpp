@@ -35,9 +35,7 @@ CpuState CreateInitialStateFromJson(const auto &test)
 
 CpuState CreateFinalStateFromJson(const auto &test)
 {
-  auto state = CreateStateFromJson(test["final"]);
-  state.t_cycles = test["cycles"].size() * 4;
-  return state;
+  return CreateStateFromJson(test["final"]);
 }
 
 void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
@@ -69,10 +67,11 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
     {                                                                                                         \
       auto initialState = CreateInitialStateFromJson(test);                                                   \
       auto finalState = CreateFinalStateFromJson(test);                                                       \
+      auto cycles = test["cycles"].size() * 4;                                                                \
       bus.Reset();                                                                                            \
       InitializeBusFromJson(bus, test["initial"], test["initial"]["ie"]);                                     \
       auto opcode = bus.Read(initialState.PC.reg++);                                                          \
-      executor.DecodeAndExecute(opcode, initialState, bus);                                                   \
+      ASSERT_EQ(cycles, executor.DecodeAndExecute(opcode, initialState, bus));                                \
       ASSERT_EQ(initialState, finalState)                                                                     \
         << std::format("Test Name: {} [Final State does not match]", static_cast<std::string>(test["name"])); \
       for (const auto &memState : test["final"]["ram"])                                                       \
@@ -86,10 +85,10 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
   }
 
 // Define the test macro
-#define DEFINE_TEST_CB(TEST_SUITE_NAME, TEST_NAME)                                                               \
+#define DEFINE_TEST_CB(TEST_SUITE_NAME, TEST_NAME)                                                            \
   TEST(TEST_SUITE_NAME, TEST_NAME)                                                                            \
   {                                                                                                           \
-    std::ifstream file{ "data/cb " EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                    \
+    std::ifstream file{ "data/cb " EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                 \
     ASSERT_TRUE(file.is_open());                                                                              \
     json tests = json::parse(file);                                                                           \
     SimpleBus bus{};                                                                                          \
@@ -98,10 +97,11 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
     {                                                                                                         \
       auto initialState = CreateInitialStateFromJson(test);                                                   \
       auto finalState = CreateFinalStateFromJson(test);                                                       \
+      auto cycles = test["cycles"].size() * 4;                                                                \
       bus.Reset();                                                                                            \
       InitializeBusFromJson(bus, test["initial"], test["initial"]["ie"]);                                     \
       auto opcode = bus.Read(initialState.PC.reg++);                                                          \
-      executor.DecodeAndExecute(opcode, initialState, bus);                                                   \
+      ASSERT_EQ(cycles, executor.DecodeAndExecute(opcode, initialState, bus));                                \
       ASSERT_EQ(initialState, finalState)                                                                     \
         << std::format("Test Name: {} [Final State does not match]", static_cast<std::string>(test["name"])); \
       for (const auto &memState : test["final"]["ram"])                                                       \
