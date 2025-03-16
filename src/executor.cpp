@@ -288,6 +288,7 @@ void Executor::SetCY(CpuState &state, bool value)
   state.AF.low = (state.AF.low & ~(1U << 4U)) | static_cast<uint8_t>(value << 4U);
 }
 
+// TODO: remove unused variable from methods
 // NOLINTBEGIN(readability-convert-member-functions-to-static, misc-unused-parameters)
 
 // Special
@@ -518,15 +519,17 @@ int Executor::Add_R(uint8_t reg, CpuState &state)
 int Executor::Add_HL(CpuState &state, Bus &bus)
 {
   uint8_t u8 = bus.Read(state.HL.reg);
-  Add_R(u8, state);
-  return 4;
+  int cycles = Add_R(u8, state);
+  cycles += 4;
+  return cycles;
 }
 
 int Executor::Add_N(CpuState &state, Bus &bus)
 {
   uint8_t u8 = bus.Read(state.PC.reg++);
-  Add_R(u8, state);
-  return 4;
+  int cycles = Add_R(u8, state);
+  cycles += 4;
+  return cycles;
 }
 
 int Executor::Add_HL_RR(uint16_t src, CpuState &state)
