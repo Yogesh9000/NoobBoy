@@ -13,14 +13,14 @@ private:
   int DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus);
 
   // Special
-  int Nop(CpuState &state);
-  int Stop(CpuState &state);
+  int Nop();
+  int Stop();
   int Halt(CpuState &state);
   int Di(CpuState &state);
   int Ei(CpuState &state);
 
   // Load
-  int Load_R_R(uint8_t &dest, uint8_t src, CpuState &state);
+  int Load_R_R(uint8_t &dest, uint8_t src);
   int Load_R_N(uint8_t &dest, CpuState &state, Bus &bus);
   int Load_RR_NN(uint16_t& dest, CpuState &state, Bus &bus);
   int Load_R_HL(uint8_t &dest, CpuState &state, Bus &bus);
@@ -41,7 +41,7 @@ private:
   int Load_A_N(CpuState &state, Bus &bus);
   int Load_C_A(CpuState &state, Bus &bus);
   int Load_A_C(CpuState &state, Bus &bus);
-  int Load_SP_HL(CpuState &state, Bus &bus);
+  int Load_SP_HL(CpuState &state);
   int Load_HL_SP_E(CpuState &state, Bus &bus);
   int Pop(Register &reg, CpuState &state, Bus &bus);
   int Push(Register &reg, CpuState &state, Bus &bus);
@@ -82,11 +82,11 @@ private:
   int Cp_N(CpuState &state, Bus &bus);
 
   int Inc_R(uint8_t &src, CpuState &state);
-  int Inc_RR(uint16_t &src, CpuState &state);
+  int Inc_RR(uint16_t &src);
   int Inc_HL(CpuState &state, Bus &bus);
 
   int Dec_R(uint8_t &src, CpuState &state);
-  int Dec_RR(uint16_t &src, CpuState &state);
+  int Dec_RR(uint16_t &src);
   int Dec_HL(CpuState &state, Bus &bus);
 
   int Ccf(CpuState &state);
@@ -126,8 +126,8 @@ private:
   int Swap(uint8_t &reg, CpuState &state);
   int Srl(uint8_t &reg, CpuState &state);
   int Bit(uint8_t reg, uint8_t bit, CpuState &state);
-  int Res(uint8_t &reg, uint8_t bit, CpuState &state);
-  int Set(uint8_t &reg, uint8_t bit, CpuState &state);
+  int Res(uint8_t &reg, uint8_t bit);
+  int Set(uint8_t &reg, uint8_t bit);
 
   // Helper functions
   static uint16_t ToU16(uint8_t msb, uint8_t lsb);

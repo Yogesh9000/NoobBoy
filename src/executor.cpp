@@ -8,10 +8,10 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
 {
   switch (opcode)
   {
-    case 0x00: return Nop(state); break;
+    case 0x00: return Nop(); break;
     case 0x01: return Load_RR_NN(state.BC.reg, state, bus); break;
     case 0x02: return Load_BC_A(state, bus); break;
-    case 0x03: return Inc_RR(state.BC.reg, state); break;
+    case 0x03: return Inc_RR(state.BC.reg); break;
     case 0x04: return Inc_R(state.BC.high, state); break;
     case 0x05: return Dec_R(state.BC.high, state); break;
     case 0x06: return Load_R_N(state.BC.high, state, bus); break;
@@ -19,15 +19,15 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x08: return Load_NN_SP(state, bus); break;
     case 0x09: return Add_HL_RR(state.BC.reg, state); break;
     case 0x0A: return Load_A_BC(state, bus); break;
-    case 0x0B: return Dec_RR(state.BC.reg, state); break;
+    case 0x0B: return Dec_RR(state.BC.reg); break;
     case 0x0C: return Inc_R(state.BC.low, state); break;
     case 0x0D: return Dec_R(state.BC.low, state); break;
     case 0x0E: return Load_R_N(state.BC.low, state, bus); break;
     case 0x0F: return Rrca(state); break;
-    case 0x10: return Stop(state); break;
+    case 0x10: return Stop(); break;
     case 0x11: return Load_RR_NN(state.DE.reg, state, bus); break;
     case 0x12: return Load_DE_A(state, bus); break;
-    case 0x13: return Inc_RR(state.DE.reg, state); break;
+    case 0x13: return Inc_RR(state.DE.reg); break;
     case 0x14: return Inc_R(state.DE.high, state); break;
     case 0x15: return Dec_R(state.DE.high, state); break;
     case 0x16: return Load_R_N(state.DE.high, state, bus); break;
@@ -35,7 +35,7 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x18: return Jr_E(state, bus); break;
     case 0x19: return Add_HL_RR(state.DE.reg, state); break;
     case 0x1A: return Load_A_DE(state, bus); break;
-    case 0x1B: return Dec_RR(state.DE.reg, state); break;
+    case 0x1B: return Dec_RR(state.DE.reg); break;
     case 0x1C: return Inc_R(state.DE.low, state); break;
     case 0x1D: return Dec_R(state.DE.low, state); break;
     case 0x1E: return Load_R_N(state.DE.low, state, bus); break;
@@ -43,7 +43,7 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x20: return Jr_CC_E((state.AF.low & (1U << 7U)) == 0, state, bus) ;break;
     case 0x21: return Load_RR_NN(state.HL.reg, state, bus); break;
     case 0x22: return Load_HL_A_Pos(state, bus); break;
-    case 0x23: return Inc_RR(state.HL.reg, state); break;
+    case 0x23: return Inc_RR(state.HL.reg); break;
     case 0x24: return Inc_R(state.HL.high, state); break;
     case 0x25: return Dec_R(state.HL.high, state); break;
     case 0x26: return Load_R_N(state.HL.high, state, bus); break;
@@ -51,7 +51,7 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x28: return Jr_CC_E((state.AF.low & (1U << 7U)) != 0, state, bus) ;break;
     case 0x29: return Add_HL_RR(state.HL.reg, state); break;
     case 0x2A: return Load_A_HL_Pos(state, bus); break;
-    case 0x2B: return Dec_RR(state.HL.reg, state); break;
+    case 0x2B: return Dec_RR(state.HL.reg); break;
     case 0x2C: return Inc_R(state.HL.low, state); break;
     case 0x2D: return Dec_R(state.HL.low, state); break;
     case 0x2E: return Load_R_N(state.HL.low, state, bus); break;
@@ -59,7 +59,7 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x30: return Jr_CC_E((state.AF.low & (1U << 4U)) == 0, state, bus) ;break;
     case 0x31: return Load_RR_NN(state.SP.reg, state, bus); break;
     case 0x32: return Load_HL_A_Neg(state, bus); break;
-    case 0x33: return Inc_RR(state.SP.reg, state); break;
+    case 0x33: return Inc_RR(state.SP.reg); break;
     case 0x34: return Inc_HL(state, bus); break;
     case 0x35: return Dec_HL(state, bus); break;
     case 0x36: return Load_HL_N(state, bus); break;
@@ -67,59 +67,59 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x38: return Jr_CC_E((state.AF.low & (1U << 4U)) != 0, state, bus) ;break;
     case 0x39: return Add_HL_RR(state.SP.reg, state); break;
     case 0x3A: return Load_A_HL_Neg(state, bus); break;
-    case 0x3B: return Dec_RR(state.SP.reg, state); break;
+    case 0x3B: return Dec_RR(state.SP.reg); break;
     case 0x3C: return Inc_R(state.AF.high, state); break;
     case 0x3D: return Dec_R(state.AF.high, state); break;
     case 0x3E: return Load_R_N(state.AF.high, state, bus); break;
     case 0x3F: return Ccf(state); break;
-    case 0x40: return Load_R_R(state.BC.high, state.BC.high, state); break;
-    case 0x41: return Load_R_R(state.BC.high, state.BC.low, state); break;
-    case 0x42: return Load_R_R(state.BC.high, state.DE.high, state); break;
-    case 0x43: return Load_R_R(state.BC.high, state.DE.low, state); break;
-    case 0x44: return Load_R_R(state.BC.high, state.HL.high, state); break;
-    case 0x45: return Load_R_R(state.BC.high, state.HL.low, state); break;
+    case 0x40: return Load_R_R(state.BC.high, state.BC.high); break;
+    case 0x41: return Load_R_R(state.BC.high, state.BC.low); break;
+    case 0x42: return Load_R_R(state.BC.high, state.DE.high); break;
+    case 0x43: return Load_R_R(state.BC.high, state.DE.low); break;
+    case 0x44: return Load_R_R(state.BC.high, state.HL.high); break;
+    case 0x45: return Load_R_R(state.BC.high, state.HL.low); break;
     case 0x46: return Load_R_HL(state.BC.high, state, bus); break;
-    case 0x47: return Load_R_R(state.BC.high, state.AF.high, state); break;
-    case 0x48: return Load_R_R(state.BC.low, state.BC.high, state); break;
-    case 0x49: return Load_R_R(state.BC.low, state.BC.low, state); break;
-    case 0x4A: return Load_R_R(state.BC.low, state.DE.high, state); break;
-    case 0x4B: return Load_R_R(state.BC.low, state.DE.low, state); break;
-    case 0x4C: return Load_R_R(state.BC.low, state.HL.high, state); break;
-    case 0x4D: return Load_R_R(state.BC.low, state.HL.low, state); break;
+    case 0x47: return Load_R_R(state.BC.high, state.AF.high); break;
+    case 0x48: return Load_R_R(state.BC.low, state.BC.high); break;
+    case 0x49: return Load_R_R(state.BC.low, state.BC.low); break;
+    case 0x4A: return Load_R_R(state.BC.low, state.DE.high); break;
+    case 0x4B: return Load_R_R(state.BC.low, state.DE.low); break;
+    case 0x4C: return Load_R_R(state.BC.low, state.HL.high); break;
+    case 0x4D: return Load_R_R(state.BC.low, state.HL.low); break;
     case 0x4E: return Load_R_HL(state.BC.low, state, bus); break;
-    case 0x4F: return Load_R_R(state.BC.low, state.AF.high, state); break;
-    case 0x50: return Load_R_R(state.DE.high, state.BC.high, state); break;
-    case 0x51: return Load_R_R(state.DE.high, state.BC.low, state); break;
-    case 0x52: return Load_R_R(state.DE.high, state.DE.high, state); break;
-    case 0x53: return Load_R_R(state.DE.high, state.DE.low, state); break;
-    case 0x54: return Load_R_R(state.DE.high, state.HL.high, state); break;
-    case 0x55: return Load_R_R(state.DE.high, state.HL.low, state); break;
+    case 0x4F: return Load_R_R(state.BC.low, state.AF.high); break;
+    case 0x50: return Load_R_R(state.DE.high, state.BC.high); break;
+    case 0x51: return Load_R_R(state.DE.high, state.BC.low); break;
+    case 0x52: return Load_R_R(state.DE.high, state.DE.high); break;
+    case 0x53: return Load_R_R(state.DE.high, state.DE.low); break;
+    case 0x54: return Load_R_R(state.DE.high, state.HL.high); break;
+    case 0x55: return Load_R_R(state.DE.high, state.HL.low); break;
     case 0x56: return Load_R_HL(state.DE.high, state, bus); break;
-    case 0x57: return Load_R_R(state.DE.high, state.AF.high, state); break;
-    case 0x58: return Load_R_R(state.DE.low, state.BC.high, state); break;
-    case 0x59: return Load_R_R(state.DE.low, state.BC.low, state); break;
-    case 0x5A: return Load_R_R(state.DE.low, state.DE.high, state); break;
-    case 0x5B: return Load_R_R(state.DE.low, state.DE.low, state); break;
-    case 0x5C: return Load_R_R(state.DE.low, state.HL.high, state); break;
-    case 0x5D: return Load_R_R(state.DE.low, state.HL.low, state); break;
+    case 0x57: return Load_R_R(state.DE.high, state.AF.high); break;
+    case 0x58: return Load_R_R(state.DE.low, state.BC.high); break;
+    case 0x59: return Load_R_R(state.DE.low, state.BC.low); break;
+    case 0x5A: return Load_R_R(state.DE.low, state.DE.high); break;
+    case 0x5B: return Load_R_R(state.DE.low, state.DE.low); break;
+    case 0x5C: return Load_R_R(state.DE.low, state.HL.high); break;
+    case 0x5D: return Load_R_R(state.DE.low, state.HL.low); break;
     case 0x5E: return Load_R_HL(state.DE.low, state, bus); break;
-    case 0x5F: return Load_R_R(state.DE.low, state.AF.high, state); break;
-    case 0x60: return Load_R_R(state.HL.high, state.BC.high, state); break;
-    case 0x61: return Load_R_R(state.HL.high, state.BC.low, state); break;
-    case 0x62: return Load_R_R(state.HL.high, state.DE.high, state); break;
-    case 0x63: return Load_R_R(state.HL.high, state.DE.low, state); break;
-    case 0x64: return Load_R_R(state.HL.high, state.HL.high, state); break;
-    case 0x65: return Load_R_R(state.HL.high, state.HL.low, state); break;
+    case 0x5F: return Load_R_R(state.DE.low, state.AF.high); break;
+    case 0x60: return Load_R_R(state.HL.high, state.BC.high); break;
+    case 0x61: return Load_R_R(state.HL.high, state.BC.low); break;
+    case 0x62: return Load_R_R(state.HL.high, state.DE.high); break;
+    case 0x63: return Load_R_R(state.HL.high, state.DE.low); break;
+    case 0x64: return Load_R_R(state.HL.high, state.HL.high); break;
+    case 0x65: return Load_R_R(state.HL.high, state.HL.low); break;
     case 0x66: return Load_R_HL(state.HL.high, state, bus); break;
-    case 0x67: return Load_R_R(state.HL.high, state.AF.high, state); break;
-    case 0x68: return Load_R_R(state.HL.low, state.BC.high, state); break;
-    case 0x69: return Load_R_R(state.HL.low, state.BC.low, state); break;
-    case 0x6A: return Load_R_R(state.HL.low, state.DE.high, state); break;
-    case 0x6B: return Load_R_R(state.HL.low, state.DE.low, state); break;
-    case 0x6C: return Load_R_R(state.HL.low, state.HL.high, state); break;
-    case 0x6D: return Load_R_R(state.HL.low, state.HL.low, state); break;
+    case 0x67: return Load_R_R(state.HL.high, state.AF.high); break;
+    case 0x68: return Load_R_R(state.HL.low, state.BC.high); break;
+    case 0x69: return Load_R_R(state.HL.low, state.BC.low); break;
+    case 0x6A: return Load_R_R(state.HL.low, state.DE.high); break;
+    case 0x6B: return Load_R_R(state.HL.low, state.DE.low); break;
+    case 0x6C: return Load_R_R(state.HL.low, state.HL.high); break;
+    case 0x6D: return Load_R_R(state.HL.low, state.HL.low); break;
     case 0x6E: return Load_R_HL(state.HL.low, state, bus); break;
-    case 0x6F: return Load_R_R(state.HL.low, state.AF.high, state); break;
+    case 0x6F: return Load_R_R(state.HL.low, state.AF.high); break;
     case 0x70: return Load_HL_R(state.BC.high, state, bus); break;
     case 0x71: return Load_HL_R(state.BC.low, state, bus); break;
     case 0x72: return Load_HL_R(state.DE.high, state, bus); break;
@@ -128,14 +128,14 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0x75: return Load_HL_R(state.HL.low, state, bus); break;
     case 0x76: return Halt(state); break;
     case 0x77: return Load_HL_R(state.AF.high, state, bus); break;
-    case 0x78: return Load_R_R(state.AF.high, state.BC.high, state); break;
-    case 0x79: return Load_R_R(state.AF.high, state.BC.low, state); break;
-    case 0x7A: return Load_R_R(state.AF.high, state.DE.high, state); break;
-    case 0x7B: return Load_R_R(state.AF.high, state.DE.low, state); break;
-    case 0x7C: return Load_R_R(state.AF.high, state.HL.high, state); break;
-    case 0x7D: return Load_R_R(state.AF.high, state.HL.low, state); break;
+    case 0x78: return Load_R_R(state.AF.high, state.BC.high); break;
+    case 0x79: return Load_R_R(state.AF.high, state.BC.low); break;
+    case 0x7A: return Load_R_R(state.AF.high, state.DE.high); break;
+    case 0x7B: return Load_R_R(state.AF.high, state.DE.low); break;
+    case 0x7C: return Load_R_R(state.AF.high, state.HL.high); break;
+    case 0x7D: return Load_R_R(state.AF.high, state.HL.low); break;
     case 0x7E: return Load_R_HL(state.AF.high, state, bus); break;
-    case 0x7F: return Load_R_R(state.AF.high, state.AF.high, state); break;
+    case 0x7F: return Load_R_R(state.AF.high, state.AF.high); break;
     case 0x80: return Add_R(state.BC.high, state); break;
     case 0x81: return Add_R(state.BC.low, state); break;
     case 0x82: return Add_R(state.DE.high, state); break;
@@ -252,7 +252,7 @@ int Executor::DecodeAndExecute(uint8_t opcode, CpuState &state, Bus &bus)
     case 0xF6: return Or_N(state, bus); break;
     case 0xF7: return Rst(0x30, state, bus); break;
     case 0xF8: return Load_HL_SP_E(state, bus); break;
-    case 0xF9: return Load_SP_HL(state, bus); break;
+    case 0xF9: return Load_SP_HL(state); break;
     case 0xFA: return Load_A_NN(state, bus); break;
     case 0xFB: return Ei(state); break;
     case 0xFE: return Cp_N(state, bus); break;
@@ -289,15 +289,15 @@ void Executor::SetCY(CpuState &state, bool value)
 }
 
 // TODO: remove unused variable from methods
-// NOLINTBEGIN(readability-convert-member-functions-to-static, misc-unused-parameters)
+// NOLINTBEGIN(readability-convert-member-functions-to-static)
 
 // Special
-int Executor::Nop(CpuState &state)
+int Executor::Nop()
 {
   return 4;
 }
 
-int Executor::Stop(CpuState &state)
+int Executor::Stop()
 {
   // TODO:
   return 4;
@@ -324,7 +324,7 @@ int Executor::Ei(CpuState &state)
 
 // Load
 
-int Executor::Load_R_R(uint8_t &dest, uint8_t src, CpuState &state)
+int Executor::Load_R_R(uint8_t &dest, uint8_t src)
 {
   dest = src;
   return 4;
@@ -469,7 +469,7 @@ int Executor::Load_A_C(CpuState &state, Bus &bus)
   return 8;
 }
 
-int Executor::Load_SP_HL(CpuState &state, Bus &bus)
+int Executor::Load_SP_HL(CpuState &state)
 {
   state.SP.reg = state.HL.reg;
   return 8;
@@ -858,7 +858,7 @@ int Executor::Inc_R(uint8_t &src, CpuState &state)
   return 4;
 }
 
-int Executor::Inc_RR(uint16_t &src, CpuState &state)
+int Executor::Inc_RR(uint16_t &src)
 {
   src = src + 1;
   return 8;
@@ -889,7 +889,7 @@ int Executor::Dec_R(uint8_t &src, CpuState &state)
   return 4;
 }
 
-int Executor::Dec_RR(uint16_t &src, CpuState &state)
+int Executor::Dec_RR(uint16_t &src)
 {
   src = src - 1;
   return 8;
@@ -1144,7 +1144,7 @@ int Executor::Rra(CpuState &state)
   return 4;
 }
 
-// NOLINTEND(readability-convert-member-functions-to-static, misc-unused-parameters)
+// NOLINTEND(readability-convert-member-functions-to-static)
 
 // CB Prefixed
 
@@ -1344,205 +1344,205 @@ int Executor::DecodeAndExecuteCB(uint8_t opcode, CpuState &state, Bus &bus)
       return cycles;
     } break;
     case 0x7F: return Bit(state.AF.high, 7, state); break;
-    case 0x80: return Res(state.BC.high, 0, state); break;
-    case 0x81: return Res(state.BC.low,  0, state); break;
-    case 0x82: return Res(state.DE.high, 0, state); break;
-    case 0x83: return Res(state.DE.low,  0, state); break;
-    case 0x84: return Res(state.HL.high, 0, state); break;
-    case 0x85: return Res(state.HL.low,  0, state); break;
+    case 0x80: return Res(state.BC.high, 0); break;
+    case 0x81: return Res(state.BC.low,  0); break;
+    case 0x82: return Res(state.DE.high, 0); break;
+    case 0x83: return Res(state.DE.low,  0); break;
+    case 0x84: return Res(state.HL.high, 0); break;
+    case 0x85: return Res(state.HL.low,  0); break;
     case 0x86: {
-      int cycles = Res(bus.Address(state.HL.reg), 0, state);
+      int cycles = Res(bus.Address(state.HL.reg), 0);
       cycles += 8;
       return cycles;
     } break;
-    case 0x87: return Res(state.AF.high, 0, state); break;
-    case 0x88: return Res(state.BC.high, 1, state); break;
-    case 0x89: return Res(state.BC.low,  1, state); break;
-    case 0x8A: return Res(state.DE.high, 1, state); break;
-    case 0x8B: return Res(state.DE.low,  1, state); break;
-    case 0x8C: return Res(state.HL.high, 1, state); break;
-    case 0x8D: return Res(state.HL.low,  1, state); break;
+    case 0x87: return Res(state.AF.high, 0); break;
+    case 0x88: return Res(state.BC.high, 1); break;
+    case 0x89: return Res(state.BC.low,  1); break;
+    case 0x8A: return Res(state.DE.high, 1); break;
+    case 0x8B: return Res(state.DE.low,  1); break;
+    case 0x8C: return Res(state.HL.high, 1); break;
+    case 0x8D: return Res(state.HL.low,  1); break;
     case 0x8E: {
-      int cycles = Res(bus.Address(state.HL.reg), 1, state);
+      int cycles = Res(bus.Address(state.HL.reg), 1);
       cycles += 8;
       return cycles;
     } break;
-    case 0x8F: return Res(state.AF.high, 1, state); break;
-    case 0x90: return Res(state.BC.high, 2, state); break;
-    case 0x91: return Res(state.BC.low,  2, state); break;
-    case 0x92: return Res(state.DE.high, 2, state); break;
-    case 0x93: return Res(state.DE.low,  2, state); break;
-    case 0x94: return Res(state.HL.high, 2, state); break;
-    case 0x95: return Res(state.HL.low,  2, state); break;
+    case 0x8F: return Res(state.AF.high, 1); break;
+    case 0x90: return Res(state.BC.high, 2); break;
+    case 0x91: return Res(state.BC.low,  2); break;
+    case 0x92: return Res(state.DE.high, 2); break;
+    case 0x93: return Res(state.DE.low,  2); break;
+    case 0x94: return Res(state.HL.high, 2); break;
+    case 0x95: return Res(state.HL.low,  2); break;
     case 0x96: {
-      int cycles = Res(bus.Address(state.HL.reg), 2, state);
+      int cycles = Res(bus.Address(state.HL.reg), 2);
       cycles  += 8;
       return cycles;
     } break;
-    case 0x97: return Res(state.AF.high, 2, state); break;
-    case 0x98: return Res(state.BC.high, 3, state); break;
-    case 0x99: return Res(state.BC.low,  3, state); break;
-    case 0x9A: return Res(state.DE.high, 3, state); break;
-    case 0x9B: return Res(state.DE.low,  3, state); break;
-    case 0x9C: return Res(state.HL.high, 3, state); break;
-    case 0x9D: return Res(state.HL.low,  3, state); break;
+    case 0x97: return Res(state.AF.high, 2); break;
+    case 0x98: return Res(state.BC.high, 3); break;
+    case 0x99: return Res(state.BC.low,  3); break;
+    case 0x9A: return Res(state.DE.high, 3); break;
+    case 0x9B: return Res(state.DE.low,  3); break;
+    case 0x9C: return Res(state.HL.high, 3); break;
+    case 0x9D: return Res(state.HL.low,  3); break;
     case 0x9E: {
-      int cycles = Res(bus.Address(state.HL.reg), 3, state);
+      int cycles = Res(bus.Address(state.HL.reg), 3);
       cycles += 8;
       return cycles;
     } break;
-    case 0x9F: return Res(state.AF.high, 3, state); break;
-    case 0xA0: return Res(state.BC.high, 4, state); break;
-    case 0xA1: return Res(state.BC.low,  4, state); break;
-    case 0xA2: return Res(state.DE.high, 4, state); break;
-    case 0xA3: return Res(state.DE.low,  4, state); break;
-    case 0xA4: return Res(state.HL.high, 4, state); break;
-    case 0xA5: return Res(state.HL.low,  4, state); break;
+    case 0x9F: return Res(state.AF.high, 3); break;
+    case 0xA0: return Res(state.BC.high, 4); break;
+    case 0xA1: return Res(state.BC.low,  4); break;
+    case 0xA2: return Res(state.DE.high, 4); break;
+    case 0xA3: return Res(state.DE.low,  4); break;
+    case 0xA4: return Res(state.HL.high, 4); break;
+    case 0xA5: return Res(state.HL.low,  4); break;
     case 0xA6: {
-      int cycles = Res(bus.Address(state.HL.reg), 4, state);
+      int cycles = Res(bus.Address(state.HL.reg), 4);
       cycles += 8;
       return cycles;
     } break;
-    case 0xA7: return Res(state.AF.high, 4, state); break;
-    case 0xA8: return Res(state.BC.high, 5, state); break;
-    case 0xA9: return Res(state.BC.low,  5, state); break;
-    case 0xAA: return Res(state.DE.high, 5, state); break;
-    case 0xAB: return Res(state.DE.low,  5, state); break;
-    case 0xAC: return Res(state.HL.high, 5, state); break;
-    case 0xAD: return Res(state.HL.low,  5, state); break;
+    case 0xA7: return Res(state.AF.high, 4); break;
+    case 0xA8: return Res(state.BC.high, 5); break;
+    case 0xA9: return Res(state.BC.low,  5); break;
+    case 0xAA: return Res(state.DE.high, 5); break;
+    case 0xAB: return Res(state.DE.low,  5); break;
+    case 0xAC: return Res(state.HL.high, 5); break;
+    case 0xAD: return Res(state.HL.low,  5); break;
     case 0xAE: {
-      int cycles = Res(bus.Address(state.HL.reg), 5, state);
+      int cycles = Res(bus.Address(state.HL.reg), 5);
       cycles += 8;
       return cycles;
     } break;
-    case 0xAF: return Res(state.AF.high, 5, state); break;
-    case 0xB0: return Res(state.BC.high, 6, state); break;
-    case 0xB1: return Res(state.BC.low,  6, state); break;
-    case 0xB2: return Res(state.DE.high, 6, state); break;
-    case 0xB3: return Res(state.DE.low,  6, state); break;
-    case 0xB4: return Res(state.HL.high, 6, state); break;
-    case 0xB5: return Res(state.HL.low,  6, state); break;
+    case 0xAF: return Res(state.AF.high, 5); break;
+    case 0xB0: return Res(state.BC.high, 6); break;
+    case 0xB1: return Res(state.BC.low,  6); break;
+    case 0xB2: return Res(state.DE.high, 6); break;
+    case 0xB3: return Res(state.DE.low,  6); break;
+    case 0xB4: return Res(state.HL.high, 6); break;
+    case 0xB5: return Res(state.HL.low,  6); break;
     case 0xB6: {
-      int cycles = Res(bus.Address(state.HL.reg), 6, state);
+      int cycles = Res(bus.Address(state.HL.reg), 6);
       cycles += 8;
       return cycles;
     } break;
-    case 0xB7: return Res(state.AF.high, 6, state); break;
-    case 0xB8: return Res(state.BC.high, 7, state); break;
-    case 0xB9: return Res(state.BC.low,  7, state); break;
-    case 0xBA: return Res(state.DE.high, 7, state); break;
-    case 0xBB: return Res(state.DE.low,  7, state); break;
-    case 0xBC: return Res(state.HL.high, 7, state); break;
-    case 0xBD: return Res(state.HL.low,  7, state); break;
+    case 0xB7: return Res(state.AF.high, 6); break;
+    case 0xB8: return Res(state.BC.high, 7); break;
+    case 0xB9: return Res(state.BC.low,  7); break;
+    case 0xBA: return Res(state.DE.high, 7); break;
+    case 0xBB: return Res(state.DE.low,  7); break;
+    case 0xBC: return Res(state.HL.high, 7); break;
+    case 0xBD: return Res(state.HL.low,  7); break;
     case 0xBE: {
-      int cycles = Res(bus.Address(state.HL.reg), 7, state);
+      int cycles = Res(bus.Address(state.HL.reg), 7);
       cycles += 8;
       return cycles;
     } break;
-    case 0xBF: return Res(state.AF.high, 7, state); break;
-    case 0xC0: return Set(state.BC.high, 0, state); break;
-    case 0xC1: return Set(state.BC.low,  0, state); break;
-    case 0xC2: return Set(state.DE.high, 0, state); break;
-    case 0xC3: return Set(state.DE.low,  0, state); break;
-    case 0xC4: return Set(state.HL.high, 0, state); break;
-    case 0xC5: return Set(state.HL.low,  0, state); break;
+    case 0xBF: return Res(state.AF.high, 7); break;
+    case 0xC0: return Set(state.BC.high, 0); break;
+    case 0xC1: return Set(state.BC.low,  0); break;
+    case 0xC2: return Set(state.DE.high, 0); break;
+    case 0xC3: return Set(state.DE.low,  0); break;
+    case 0xC4: return Set(state.HL.high, 0); break;
+    case 0xC5: return Set(state.HL.low,  0); break;
     case 0xC6: {
-      int cycles = Set(bus.Address(state.HL.reg), 0, state);
+      int cycles = Set(bus.Address(state.HL.reg), 0);
       cycles += 8;
       return cycles;
     } break;
-    case 0xC7: return Set(state.AF.high, 0, state); break;
-    case 0xC8: return Set(state.BC.high, 1, state); break;
-    case 0xC9: return Set(state.BC.low,  1, state); break;
-    case 0xCA: return Set(state.DE.high, 1, state); break;
-    case 0xCB: return Set(state.DE.low,  1, state); break;
-    case 0xCC: return Set(state.HL.high, 1, state); break;
-    case 0xCD: return Set(state.HL.low,  1, state); break;
+    case 0xC7: return Set(state.AF.high, 0); break;
+    case 0xC8: return Set(state.BC.high, 1); break;
+    case 0xC9: return Set(state.BC.low,  1); break;
+    case 0xCA: return Set(state.DE.high, 1); break;
+    case 0xCB: return Set(state.DE.low,  1); break;
+    case 0xCC: return Set(state.HL.high, 1); break;
+    case 0xCD: return Set(state.HL.low,  1); break;
     case 0xCE: {
-      int cycles = Set(bus.Address(state.HL.reg), 1, state);
+      int cycles = Set(bus.Address(state.HL.reg), 1);
       cycles += 8;
       return cycles;
     } break;
-    case 0xCF: return Set(state.AF.high, 1, state); break;
-    case 0xD0: return Set(state.BC.high, 2, state); break;
-    case 0xD1: return Set(state.BC.low,  2, state); break;
-    case 0xD2: return Set(state.DE.high, 2, state); break;
-    case 0xD3: return Set(state.DE.low,  2, state); break;
-    case 0xD4: return Set(state.HL.high, 2, state); break;
-    case 0xD5: return Set(state.HL.low,  2, state); break;
+    case 0xCF: return Set(state.AF.high, 1); break;
+    case 0xD0: return Set(state.BC.high, 2); break;
+    case 0xD1: return Set(state.BC.low,  2); break;
+    case 0xD2: return Set(state.DE.high, 2); break;
+    case 0xD3: return Set(state.DE.low,  2); break;
+    case 0xD4: return Set(state.HL.high, 2); break;
+    case 0xD5: return Set(state.HL.low,  2); break;
     case 0xD6: {
-      int cycles = Set(bus.Address(state.HL.reg), 2, state);
+      int cycles = Set(bus.Address(state.HL.reg), 2);
       cycles += 8;
       return cycles;
     } break;
-    case 0xD7: return Set(state.AF.high, 2, state); break;
-    case 0xD8: return Set(state.BC.high, 3, state); break;
-    case 0xD9: return Set(state.BC.low,  3, state); break;
-    case 0xDA: return Set(state.DE.high, 3, state); break;
-    case 0xDB: return Set(state.DE.low,  3, state); break;
-    case 0xDC: return Set(state.HL.high, 3, state); break;
-    case 0xDD: return Set(state.HL.low,  3, state); break;
+    case 0xD7: return Set(state.AF.high, 2); break;
+    case 0xD8: return Set(state.BC.high, 3); break;
+    case 0xD9: return Set(state.BC.low,  3); break;
+    case 0xDA: return Set(state.DE.high, 3); break;
+    case 0xDB: return Set(state.DE.low,  3); break;
+    case 0xDC: return Set(state.HL.high, 3); break;
+    case 0xDD: return Set(state.HL.low,  3); break;
     case 0xDE: {
-      int cycles = Set(bus.Address(state.HL.reg), 3, state);
+      int cycles = Set(bus.Address(state.HL.reg), 3);
       cycles += 8;
       return cycles;
     } break;
-    case 0xDF: return Set(state.AF.high, 3, state); break;
-    case 0xE0: return Set(state.BC.high, 4, state); break;
-    case 0xE1: return Set(state.BC.low,  4, state); break;
-    case 0xE2: return Set(state.DE.high, 4, state); break;
-    case 0xE3: return Set(state.DE.low,  4, state); break;
-    case 0xE4: return Set(state.HL.high, 4, state); break;
-    case 0xE5: return Set(state.HL.low,  4, state); break;
+    case 0xDF: return Set(state.AF.high, 3); break;
+    case 0xE0: return Set(state.BC.high, 4); break;
+    case 0xE1: return Set(state.BC.low,  4); break;
+    case 0xE2: return Set(state.DE.high, 4); break;
+    case 0xE3: return Set(state.DE.low,  4); break;
+    case 0xE4: return Set(state.HL.high, 4); break;
+    case 0xE5: return Set(state.HL.low,  4); break;
     case 0xE6: {
-      int cycles = Set(bus.Address(state.HL.reg), 4, state);
+      int cycles = Set(bus.Address(state.HL.reg), 4);
       cycles += 8;
       return cycles;
     } break;
-    case 0xE7: return Set(state.AF.high, 4, state); break;
-    case 0xE8: return Set(state.BC.high, 5, state); break;
-    case 0xE9: return Set(state.BC.low,  5, state); break;
-    case 0xEA: return Set(state.DE.high, 5, state); break;
-    case 0xEB: return Set(state.DE.low,  5, state); break;
-    case 0xEC: return Set(state.HL.high, 5, state); break;
-    case 0xED: return Set(state.HL.low,  5, state); break;
+    case 0xE7: return Set(state.AF.high, 4); break;
+    case 0xE8: return Set(state.BC.high, 5); break;
+    case 0xE9: return Set(state.BC.low,  5); break;
+    case 0xEA: return Set(state.DE.high, 5); break;
+    case 0xEB: return Set(state.DE.low,  5); break;
+    case 0xEC: return Set(state.HL.high, 5); break;
+    case 0xED: return Set(state.HL.low,  5); break;
     case 0xEE: {
-      int cycles = Set(bus.Address(state.HL.reg), 5, state);
+      int cycles = Set(bus.Address(state.HL.reg), 5);
       cycles += 8;
       return cycles;
     } break;
-    case 0xEF: return Set(state.AF.high, 5, state); break;
-    case 0xF0: return Set(state.BC.high, 6, state); break;
-    case 0xF1: return Set(state.BC.low,  6, state); break;
-    case 0xF2: return Set(state.DE.high, 6, state); break;
-    case 0xF3: return Set(state.DE.low,  6, state); break;
-    case 0xF4: return Set(state.HL.high, 6, state); break;
-    case 0xF5: return Set(state.HL.low,  6, state); break;
+    case 0xEF: return Set(state.AF.high, 5); break;
+    case 0xF0: return Set(state.BC.high, 6); break;
+    case 0xF1: return Set(state.BC.low,  6); break;
+    case 0xF2: return Set(state.DE.high, 6); break;
+    case 0xF3: return Set(state.DE.low,  6); break;
+    case 0xF4: return Set(state.HL.high, 6); break;
+    case 0xF5: return Set(state.HL.low,  6); break;
     case 0xF6: {
-      int cycles = Set(bus.Address(state.HL.reg), 6, state);
+      int cycles = Set(bus.Address(state.HL.reg), 6);
       cycles += 8;
       return cycles;
     } break;
-    case 0xF7: return Set(state.AF.high, 6, state); break;
-    case 0xF8: return Set(state.BC.high, 7, state); break;
-    case 0xF9: return Set(state.BC.low,  7, state); break;
-    case 0xFA: return Set(state.DE.high, 7, state); break;
-    case 0xFB: return Set(state.DE.low,  7, state); break;
-    case 0xFC: return Set(state.HL.high, 7, state); break;
-    case 0xFD: return Set(state.HL.low,  7, state); break;
+    case 0xF7: return Set(state.AF.high, 6); break;
+    case 0xF8: return Set(state.BC.high, 7); break;
+    case 0xF9: return Set(state.BC.low,  7); break;
+    case 0xFA: return Set(state.DE.high, 7); break;
+    case 0xFB: return Set(state.DE.low,  7); break;
+    case 0xFC: return Set(state.HL.high, 7); break;
+    case 0xFD: return Set(state.HL.low,  7); break;
     case 0xFE: {
-      int cycles = Set(bus.Address(state.HL.reg), 7, state);
+      int cycles = Set(bus.Address(state.HL.reg), 7);
       cycles += 8;
       return cycles;
     } break;
-    case 0xFF: return Set(state.AF.high, 7, state); break;
+    case 0xFF: return Set(state.AF.high, 7); break;
     default:
       throw NotImplemented(std::format("{}Unable to execute instruction {}CB {:#04x}{}", RED, BOLDRED, opcode, RESET));
   }
 
 }
 
-// NOLINTBEGIN(readability-convert-member-functions-to-static, misc-unused-parameters)
+// NOLINTBEGIN(readability-convert-member-functions-to-static)
 int Executor::Rlc(uint8_t& reg, CpuState &state)
 {
   uint8_t bit7 = (reg & 0x80U) >> 7U;
@@ -1663,16 +1663,16 @@ int Executor::Bit(uint8_t reg, uint8_t bit, CpuState &state)
   return 8;
 }
 
-int Executor::Res(uint8_t &reg, uint8_t bit, CpuState &state)
+int Executor::Res(uint8_t &reg, uint8_t bit)
 {
   reg = (reg & ~(1U << bit));
   return 8;
 }
 
-int Executor::Set(uint8_t &reg, uint8_t bit, CpuState &state)
+int Executor::Set(uint8_t &reg, uint8_t bit)
 {
   reg = (reg & ~(1U << bit)) | (1U << bit);
   return 8;
 }
 
-// NOLINTEND(readability-convert-member-functions-to-static, misc-unused-parameters)
+// NOLINTEND(readability-convert-member-functions-to-static)
