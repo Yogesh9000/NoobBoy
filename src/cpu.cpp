@@ -23,7 +23,7 @@ void Cpu::ResetState()
 }
 
 
-void Cpu::Tick()
+int Cpu::Tick()
 {
   HandleInterrupts();
 
@@ -34,15 +34,16 @@ void Cpu::Tick()
   }
 
   if (m_state.IsHalted)
-    return;
+    return 0;
 
-  auto cyclesTillNow = m_state.t_cycles;
   auto opcode = m_bus.Read(m_state.PC.reg);
   ++m_state.PC.reg; // increment Program Counter
-  m_executor.DecodeAndExecute(opcode, m_state, m_bus);
-  m_cycles = m_state.t_cycles - cyclesTillNow;
+  int cycles = m_executor.DecodeAndExecute(opcode, m_state, m_bus);
+  m_cycles = cycles;
 
   UpdateTimers();
+
+  return cycles;
 }
 
 // TODO: Emulate halt bug

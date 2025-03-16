@@ -19,7 +19,7 @@ public:
   // Reset Cpu state to initial state
   void ResetState();
 
-  void Tick();
+  int Tick();
 
   void RequestInterrupt(uint8_t id);
 
