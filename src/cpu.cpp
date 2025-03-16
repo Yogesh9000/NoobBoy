@@ -96,12 +96,6 @@ void Cpu::HandleInterrupts()
   }
 }
 
-void Cpu::RequestInterrupt(uint8_t id)
-{
-  uint8_t IF = m_bus.Address(0xFF0F);
-  IF |= (1U << id);
-}
-
 void Cpu::UpdateDividerRegister()
 {
   m_dividerCounter += m_cycles;
@@ -141,7 +135,7 @@ void Cpu::UpdateTimers()
       if (tima == 255)
       {
         tima = tma;
-        RequestInterrupt(2);
+        m_bus.RequestInterrupt(2);
       }
       else
       {

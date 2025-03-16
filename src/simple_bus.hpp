@@ -21,6 +21,9 @@ public:
   // reset all memory location to zero
   void Reset() override;
 
+  // request a interrupt to cpu
+  void RequestInterrupt(uint8_t id) override;
+
 private:
   std::array<uint8_t, MEMORY_SIZE> m_memory;
 };

@@ -21,8 +21,6 @@ public:
 
   int Tick();
 
-  void RequestInterrupt(uint8_t id);
-
 private:
   void HandleInterrupts();
   void UpdateTimers();

@@ -20,3 +20,9 @@ void SimpleBus::Reset()
 {
   m_memory.fill(0);
 }
+
+void SimpleBus::RequestInterrupt(uint8_t id)
+{
+  uint8_t IF = Address(0xFF0F);
+  IF |= (1U << id);
+}

@@ -17,4 +17,7 @@ public:
 
   // reset all memory location to zero
   virtual void Reset() = 0;
+
+  // request a interrupt to cpu
+  virtual void RequestInterrupt(uint8_t id) = 0;
 };
