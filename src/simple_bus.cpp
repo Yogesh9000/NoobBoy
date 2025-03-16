@@ -8,7 +8,16 @@ uint8_t SimpleBus::Read(uint16_t addr)
 
 void SimpleBus::Write(uint16_t addr, uint8_t data)
 {
-  m_memory[addr] = data;
+  constexpr int DIV{ 0xFF04 };
+
+  if (addr == DIV) // Explcitily writing to DIV register reset's it to zero
+  {
+    m_memory[DIV] = 0;
+  }
+  else
+  {
+    m_memory[addr] = data;
+  }
 }
 
 uint8_t& SimpleBus::Address(uint16_t addr)
