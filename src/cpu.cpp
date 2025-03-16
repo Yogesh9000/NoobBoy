@@ -39,9 +39,8 @@ int Cpu::Tick()
   auto opcode = m_bus.Read(m_state.PC.reg);
   ++m_state.PC.reg; // increment Program Counter
   int cycles = m_executor.DecodeAndExecute(opcode, m_state, m_bus);
-  m_cycles = cycles;
 
-  UpdateTimers();
+  m_state.t_cycles += cycles;
 
   return cycles;
 }
@@ -93,80 +92,6 @@ void Cpu::HandleInterrupts()
     }
     
     m_state.t_cycles += 20; // It takes 5 clock cycles to service a routine
-  }
-}
-
-void Cpu::UpdateDividerRegister()
-{
-  m_dividerCounter += m_cycles;
-  if (m_dividerCounter > 255)
-  {
-    m_dividerCounter = 0;
-    // Using Address instead of Write to update DIV register,
-    // since writing to DIV register reset's it to 0
-    // TODO: Update bus to reset DIV register to 0 on Write
-    auto div = m_bus.Address(0xFF04);
-    ++div;
-  }
-}
-
-void Cpu::UpdateTimers()
-{
-  UpdateDividerRegister();
-
-  auto tima = m_bus.Address(0xFF05);
-  auto tma = m_bus.Address(0xFF06);
-
-  // Update the frequency at which TIMA is incremented
-  if (m_timerFreq != GetClockFreq())
-  {
-    SetClockFreq();
-  }
-
-  // the clock must be enabled to update the clock 
-  if (IsClockEnabled())
-  {
-    m_timerCounter -= m_cycles; 
-
-    // enough cpu clock cycles have happened to update the timer
-    if (m_timerCounter <= 0)
-    {
-      SetClockFreq();
-      if (tima == 255)
-      {
-        tima = tma;
-        m_bus.RequestInterrupt(2);
-      }
-      else
-      {
-        ++tima;
-      }
-    }
-  }
-
-}
-
-bool Cpu::IsClockEnabled()
-{
-  constexpr uint16_t TAC {0xFF07U};
-  return (m_bus.Read(TAC) & (1U << 2U)) != 0;
-}
-
-uint8_t Cpu::GetClockFreq()
-{
-  constexpr uint16_t TAC {0xFF07U};
-  return m_bus.Read(TAC) & 0x03U;
-}
-
-void Cpu::SetClockFreq()
-{
-  auto freq = GetClockFreq();
-  switch (freq)
-  {
-    case 0: m_timerCounter = 1024;break;
-    case 1: m_timerCounter = 16;break;
-    case 2: m_timerCounter = 64;break;
-    case 3: m_timerCounter = 256;break;
   }
 }
 
