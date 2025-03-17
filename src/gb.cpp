@@ -32,7 +32,6 @@ void GameBoy::Run()
   {
     while(elapsedCpuCycles < MAX_CYCLES_BEFORE_RENDER)
     {
-      std::cout << m_cpu.GetState() << "\n";
       int cycles = m_cpu.Tick();
       m_timer.Tick(cycles); // Synchronize Timer with CPU
 
