@@ -1,37 +1,37 @@
 find_package(nlohmann_json CONFIG REQUIRED)
 
 add_executable(test_load test_load_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_load PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)
 
 add_executable(test_special test_special_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_special PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)
 
 add_executable(test_arithmetic test_arithmetic_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_arithmetic PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)
 
 add_executable(test_flow test_control_flow_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_flow PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)
 
 add_executable(test_rs test_rotate_shift_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_rs PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)
 
 add_executable(test_cb test_cb_prefix_instruction.cpp
-                   ${PROJECT_SOURCE_DIR}/src/simple_bus.cpp
+                   dummy_bus.cpp
                    ${PROJECT_SOURCE_DIR}/src/executor.cpp)
 target_link_libraries(test_cb PRIVATE GTest::gtest GTest::gtest_main
                                   nlohmann_json::nlohmann_json)

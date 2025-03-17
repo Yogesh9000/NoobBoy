@@ -2,7 +2,7 @@
 
 #include "common.hpp"
 #include "executor.hpp"
-#include "simple_bus.hpp"
+#include "dummy_bus.hpp"
 #include <cstdint>
 #include <fstream>
 #include <gtest/gtest.h>
@@ -61,7 +61,7 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
     std::ifstream file{ "data/" EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                    \
     ASSERT_TRUE(file.is_open());                                                                              \
     json tests = json::parse(file);                                                                           \
-    SimpleBus bus{};                                                                                          \
+    DummyBus bus{};                                                                                           \
     Executor executor;                                                                                        \
     for (const auto &test : tests)                                                                            \
     {                                                                                                         \
@@ -91,7 +91,7 @@ void InitializeBusFromJson(auto &bus, const auto &cpuState, uint8_t ie)
     std::ifstream file{ "data/cb " EXPAND_AND_STRINGIFY(TEST_NAME) ".json" };                                 \
     ASSERT_TRUE(file.is_open());                                                                              \
     json tests = json::parse(file);                                                                           \
-    SimpleBus bus{};                                                                                          \
+    DummyBus bus{};                                                                                           \
     Executor executor;                                                                                        \
     for (const auto &test : tests)                                                                            \
     {                                                                                                         \
