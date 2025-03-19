@@ -25,5 +25,7 @@ public:
   void RequestInterrupt(uint8_t id) override;
 
 private:
+  void Dma(uint16_t src);
+
   std::array<uint8_t, MEMORY_SIZE> m_memory;
 };
