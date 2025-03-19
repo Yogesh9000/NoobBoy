@@ -28,6 +28,7 @@ void GameBoy::Run()
 {
   constexpr int MAX_CYCLES_BEFORE_RENDER{ 69905 };
   uint64_t elapsedCpuCycles{0};
+  m_cpu.ResetState(); // Set's Cpu to state just after boot rom is finished running
   while(true)
   {
     while(elapsedCpuCycles < MAX_CYCLES_BEFORE_RENDER)
