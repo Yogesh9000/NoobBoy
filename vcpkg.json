@@ -2,6 +2,8 @@
   "name": "gameboy",
   "dependencies": [
     "gtest",
-    "nlohmann-json"
-  ]
+    "nlohmann-json",
+    "sdl3"
+  ],
+  "builtin-baseline": "670f6dddaafc59c5dfe0587a130d59a35c48ea38"
 }
