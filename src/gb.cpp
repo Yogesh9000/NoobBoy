@@ -6,6 +6,7 @@
 #include <fstream>
 #include <format>
 #include <stdexcept>
+#include <SDL3/SDL_events.h>
 
 GameBoy::GameBoy(const std::string &rom_path)
   : m_bus(std::make_unique<SimpleBus>()), m_cpu{ *m_bus }, m_timer(*m_bus), m_ppu("NoobBoy")
@@ -30,8 +31,19 @@ void GameBoy::Run()
   constexpr int MAX_CYCLES_BEFORE_RENDER{ 69905 };
   uint64_t elapsedCpuCycles{0};
   m_cpu.ResetState(); // Set's Cpu to state just after boot rom is finished running
-  while(true)
+
+  SDL_Event event;
+  bool quit{ false };
+  while(!quit)
   {
+    while (SDL_PollEvent(&event))
+    {
+      if (event.type == SDL_EVENT_QUIT)
+      {
+        quit = true;
+      }
+    }
+
     while(elapsedCpuCycles < MAX_CYCLES_BEFORE_RENDER)
     {
       int cycles = m_cpu.Tick();
