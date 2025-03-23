@@ -7,7 +7,8 @@
 #include <format>
 #include <stdexcept>
 
-GameBoy::GameBoy(const std::string &rom_path) : m_bus(std::make_unique<SimpleBus>()), m_cpu{*m_bus}, m_timer(*m_bus)
+GameBoy::GameBoy(const std::string &rom_path)
+  : m_bus(std::make_unique<SimpleBus>()), m_cpu{ *m_bus }, m_timer(*m_bus), m_ppu("NoobBoy")
 {
   std::ifstream rom(rom_path, std::ios::binary);
   if (!rom.is_open())
@@ -35,10 +36,12 @@ void GameBoy::Run()
     {
       int cycles = m_cpu.Tick();
       m_timer.Tick(cycles); // Synchronize Timer with CPU
+      m_ppu.Tick(cycles);
 
       elapsedCpuCycles += cycles;
     }
-    // TODO: RENDER SCREEN HERE
+
+    m_ppu.UpdateFrame();
 
     elapsedCpuCycles = 0; // Reset to zero
   }
