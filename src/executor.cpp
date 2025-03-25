@@ -537,7 +537,7 @@ int Executor::Add_HL_RR(uint16_t src, CpuState &state)
 
   SetN(state, false);
   SetH(state, ((state.HL.reg & 0xFFFU) + (src & 0xFFFU)) > 0xFFFU);
-  SetCY(state, res >= 0xFFFFU);
+  SetCY(state, res > 0xFFFFU);
 
   state.HL.reg = res & 0xFFFFU;
   return 8;
