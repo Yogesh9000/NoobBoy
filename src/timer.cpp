@@ -17,7 +17,7 @@ void Timer::UpdateDividerRegister(int cycles)
   if (m_dividerCounter > 255)
   {
     m_dividerCounter = 0;
-    auto div = m_bus.Address(0xFF04);
+    auto& div = m_bus.Address(0xFF04);
     ++div;
   }
 }
@@ -26,14 +26,14 @@ void Timer::UpdateTimers(int cycles)
 {
   UpdateDividerRegister(cycles);
 
-  auto tima = m_bus.Address(0xFF05);
-  auto tma = m_bus.Address(0xFF06);
 
   // Update the frequency at which TIMA is incremented
   if (m_timerFreq != GetClockFreq())
   {
     SetClockFreq();
   }
+  auto& tima = m_bus.Address(0xFF05);
+  auto& tma = m_bus.Address(0xFF06);
 
   // the clock must be enabled to update the clock 
   if (IsClockEnabled())

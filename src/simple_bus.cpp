@@ -38,7 +38,7 @@ void SimpleBus::Reset()
 
 void SimpleBus::RequestInterrupt(uint8_t id)
 {
-  uint8_t IF = Address(0xFF0F);
+  uint8_t& IF = Address(0xFF0F);
   IF |= (1U << id);
 }
 

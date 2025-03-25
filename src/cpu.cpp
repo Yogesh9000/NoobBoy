@@ -25,13 +25,13 @@ void Cpu::ResetState()
 
 int Cpu::Tick()
 {
-  HandleInterrupts();
-
   if (m_state.ie_delay)
   {
     --m_state.ie_delay;
     m_state.ime = m_state.ie_delay == 0;
   }
+
+  HandleInterrupts();
 
   if (m_state.IsHalted)
     return 0;
@@ -54,8 +54,8 @@ void Cpu::HandleInterrupts()
     state.PC.reg = address;
   };
 
-  uint8_t IE = m_bus.Address(0xFFFF);
-  uint8_t IF = m_bus.Address(0xFF0F);
+  uint8_t& IE = m_bus.Address(0xFFFF);
+  uint8_t& IF = m_bus.Address(0xFF0F);
   uint8_t pendingInterrupts = IE & IF;
 
   // If both the interrupt request flag (IF) and the corresponding interrupt enable flag (IE) are set,
