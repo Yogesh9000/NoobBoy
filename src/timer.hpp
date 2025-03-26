@@ -10,13 +10,11 @@ public:
 private:
   void UpdateDividerRegister(int cycles);
   void UpdateTimers(int cycles);
-  uint8_t GetClockFreq();
-  void SetClockFreq();
+  int GetClockFreq();
   bool IsClockEnabled();
 
   Bus &m_bus;
 
-  int m_timerFreq{0};
-  int m_timerCounter{1024};
+  int m_timerCounter{0};
   int m_dividerCounter{0};
 };

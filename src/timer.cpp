@@ -1,5 +1,6 @@
 #include "timer.hpp"
 #include "bus.hpp"
+#include <stdexcept>
 
 Timer::Timer(Bus &bus) : m_bus(bus)
 {
@@ -26,25 +27,18 @@ void Timer::UpdateTimers(int cycles)
 {
   UpdateDividerRegister(cycles);
 
-
-  // Update the frequency at which TIMA is incremented
-  if (m_timerFreq != GetClockFreq())
-  {
-    SetClockFreq();
-  }
   auto& tima = m_bus.Address(0xFF05);
   auto& tma = m_bus.Address(0xFF06);
 
   // the clock must be enabled to update the clock 
   if (IsClockEnabled())
   {
-    m_timerCounter -= cycles; 
+    m_timerCounter += cycles; 
 
     // enough cpu clock cycles have happened to update the timer
-    if (m_timerCounter <= 0)
+    if (m_timerCounter >= GetClockFreq())
     {
-      SetClockFreq();
-      if (tima == 255)
+      if (tima >= 255)
       {
         tima = tma;
         m_bus.RequestInterrupt(2);
@@ -58,22 +52,17 @@ void Timer::UpdateTimers(int cycles)
 }
 
 
-uint8_t Timer::GetClockFreq()
+int Timer::GetClockFreq()
 {
   constexpr uint16_t TAC {0xFF07U};
-  return m_bus.Read(TAC) & 0x03U;
-}
-
-void Timer::SetClockFreq()
-{
-  auto freq = GetClockFreq();
+  auto freq =  m_bus.Read(TAC) & 0x03U;
   switch (freq)
   {
-    case 0: m_timerCounter = 1024;break;
-    case 1: m_timerCounter = 16;break;
-    case 2: m_timerCounter = 64;break;
-    case 3: m_timerCounter = 256;break;
-    default: /* Unreachable */ break;
+    case 0: return  1024;break;
+    case 1: return 16;break;
+    case 2: return 64;break;
+    case 3: return 256;break;
+    default: throw std::runtime_error("Unknown Timer Freq"); break;
   }
 }
 
