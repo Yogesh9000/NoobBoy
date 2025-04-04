@@ -26,6 +26,7 @@ public:
   void Tick(int cycles);
 
 private:
+  [[nodiscard]] bool IsLcdEnabled() const;
   SDL_Window* m_window;
   SDL_Renderer* m_renderer;
   SDL_Texture* m_texture;

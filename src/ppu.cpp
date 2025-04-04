@@ -34,4 +34,8 @@ void PPU::UpdateFrame()
 void PPU::Tick(int cycles)
 {
   // TODO:
+bool PPU::IsLcdEnabled() const
+{
+  constexpr int LCDC{ 0xFF40 };
+  return (m_bus.Read(LCDC) & 0x80U) != 0;
 }
