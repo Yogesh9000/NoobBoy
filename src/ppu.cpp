@@ -39,3 +39,84 @@ bool PPU::IsLcdEnabled() const
   constexpr int LCDC{ 0xFF40 };
   return (m_bus.Read(LCDC) & 0x80U) != 0;
 }
+
+void PPU::UpdateLcdStatus()
+{
+  constexpr int STAT { 0xFF41 };
+  constexpr int LY { 0xFF44 };
+  constexpr int LYC { 0xFF45 };
+
+  auto status { m_bus.Read(STAT) };
+  if (!IsLcdEnabled())
+  {
+    // set the mode to 1 during lcd disabled and reset scanline
+    m_scanLineCounter = 456;
+    m_bus.Write(LY, 0x00);
+    status &= 252U;
+    status |= (0x01U);
+    m_bus.Write(STAT, status);
+    return;
+  }
+
+   auto currentLine = m_bus.Read(LY) ;
+   auto currentMode = status & 0x3U ;
+   auto mode{ 0 };
+   bool reqInt{ false };
+
+   // in vblank so set mode to 1
+   if (currentLine >= 144)
+   {      
+     mode = 1;
+     status |= (0x01U);
+     status &= ~(1U << 1U);
+     reqInt = (status & (1U << 4U)) != 0;
+   }
+   else
+   {
+     int mode2bounds = 456-80 ;
+     int mode3bounds = mode2bounds - 172 ;
+
+     // mode 2
+     if (m_scanLineCounter >= mode2bounds)
+     {
+       mode = 2 ;
+       status |= (1U << 1U);
+       status &= ~(1U << 0U);
+       reqInt = (status & (1U << 5U)) != 0;
+     }
+     // mode 3
+     else if(m_scanLineCounter >= mode3bounds)
+     {
+       mode = 3 ;
+       status |= (1U << 1U);
+       status |= (1U << 0U);
+     }
+     // mode 0
+     else
+     {
+       mode = 0;
+       status &= ~(1U << 1U);
+       status &= ~(1U << 0U);
+       reqInt = (status & (1U << 3U)) != 0;
+     }
+   }
+
+   // just entered a new mode so request interupt
+   if (reqInt && (mode != currentMode))
+     m_bus.RequestInterrupt(1) ;
+
+   // check the conincidence flag
+   if (m_bus.Read(LY) == m_bus.Read(LYC))
+   {
+     status |= (1U << 2U);
+     if ((status & (1U << 6U)) != 0)
+     {
+       m_bus.RequestInterrupt(1) ;
+     }
+   }
+   else
+   {
+     status &= ~(1U << 2U);
+   }
+   m_bus.Write(STAT, status) ; 
+}

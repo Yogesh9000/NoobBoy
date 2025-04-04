@@ -27,10 +27,13 @@ public:
 
 private:
   [[nodiscard]] bool IsLcdEnabled() const;
+  void UpdateLcdStatus();
+
   SDL_Window* m_window;
   SDL_Renderer* m_renderer;
   SDL_Texture* m_texture;
 
   std::vector<int> m_pixels;
   Bus &m_bus;
+  int m_scanLineCounter{ 456 };
 };
