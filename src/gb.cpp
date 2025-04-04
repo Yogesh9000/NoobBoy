@@ -9,7 +9,7 @@
 #include <SDL3/SDL_events.h>
 
 GameBoy::GameBoy(const std::string &rom_path)
-  : m_bus(std::make_unique<SimpleBus>()), m_cpu{ *m_bus }, m_timer(*m_bus), m_ppu("NoobBoy")
+  : m_bus(std::make_unique<SimpleBus>()), m_cpu{ *m_bus }, m_timer(*m_bus), m_ppu("NoobBoy", *m_bus)
 {
   std::ifstream rom(rom_path, std::ios::binary);
   if (!rom.is_open())

@@ -5,8 +5,8 @@
 #include "SDL3/SDL_video.h"
 
 // TODO: Add error handling as each of SDL functions may fail
-PPU::PPU(const char *title) // NOLINT(hicpp-member-init)
-  : m_pixels(static_cast<unsigned long>(PIXEL_SIZE * LCD_WIDTH * LCD_HEIGHT), 0)
+PPU::PPU(const char *title, Bus &bus) // NOLINT(hicpp-member-init)
+  : m_pixels(static_cast<unsigned long>(PIXEL_SIZE * LCD_WIDTH * LCD_HEIGHT), 0), m_bus(bus)
 {
   SDL_InitSubSystem(SDL_INIT_VIDEO);
   SDL_CreateWindowAndRenderer(title, LCD_WIDTH * SCALE, LCD_HEIGHT * SCALE, SDL_WINDOW_RESIZABLE, &m_window, &m_renderer);

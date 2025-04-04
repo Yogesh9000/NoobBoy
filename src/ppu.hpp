@@ -2,6 +2,7 @@
 
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_video.h"
+#include "bus.hpp"
 #include <vector>
 
 class PPU
@@ -12,7 +13,7 @@ public:
   constexpr static int SCALE { 4 };
   constexpr static int PIXEL_SIZE{ 3 }; // since we are using SDL_PIXELFORMAT_RGB24 each pixel has size of 3bytes
 
-  explicit PPU(const char *title);
+  explicit PPU(const char *title, Bus &bus);
   ~PPU();
 
   explicit PPU(const PPU &) = delete;
@@ -30,4 +31,5 @@ private:
   SDL_Texture* m_texture;
 
   std::vector<int> m_pixels;
+  Bus &m_bus;
 };
