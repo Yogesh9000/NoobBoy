@@ -28,6 +28,7 @@ public:
 private:
   [[nodiscard]] bool IsLcdEnabled() const;
   void UpdateLcdStatus();
+  void DrawScanLine();
 
   SDL_Window* m_window;
   SDL_Renderer* m_renderer;

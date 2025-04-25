@@ -33,7 +33,39 @@ void PPU::UpdateFrame()
 
 void PPU::Tick(int cycles)
 {
-  // TODO:
+  UpdateLcdStatus();
+  if (IsLcdEnabled())
+  {
+    m_scanLineCounter -= cycles;
+  }
+  else
+  {
+    return;
+  }
+
+  if (m_scanLineCounter <= 0)
+  {
+    constexpr int LY { 0xFF44 };
+    auto &ly{ m_bus.Address(LY) };
+    ++ly;
+    auto currentLine{ m_bus.Read(LY) };
+    m_scanLineCounter = 456;
+    // we have entered vertical blank period
+    if (currentLine == 144)
+    {
+      m_bus.RequestInterrupt(0) ;
+    }
+    else if (currentLine > 153) // if gone past scanline 153 reset to 0
+    {
+      ly = 0;
+    }
+    else if (currentLine < 144) // draw the current scanline
+    {
+      DrawScanLine() ; 
+    }
+  }
+}
+
 bool PPU::IsLcdEnabled() const
 {
   constexpr int LCDC{ 0xFF40 };
@@ -119,4 +151,8 @@ void PPU::UpdateLcdStatus()
      status &= ~(1U << 2U);
    }
    m_bus.Write(STAT, status) ; 
+}
+
+void PPU::DrawScanLine()
+{
 }
